@@ -15,7 +15,9 @@ using namespace std;
 //------------------------------------------------------------------------------
 QuadTree::QuadTree()
 {
-    _taille = 0;
+	_taille = 0;
+	_racine.pere = NULL;
+	_racine.fils = NULL;
 // À COMPLÉTER
 }
 
@@ -42,7 +44,20 @@ void QuadTree::afficher() const
 //------------------------------------------------------------------------------
 void QuadTree::importer(const ImagePNG & img)
 {
-// À COMPLÉTER
+    Couleur pixel;
+
+	unsigned larg = img.largeur();
+
+	
+
+    for (unsigned x = 0; x < img.largeur(); x++)
+    {
+        for (unsigned y = 0; y < img.hauteur(); y++)
+        {
+            pixel = img.lirePixel(x,y);
+            pixel.R = pixel.V = pixel.B = gris;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
