@@ -15,24 +15,40 @@ using namespace std;
 //------------------------------------------------------------------------------
 QuadTree::QuadTree(){
 	_taille = 0;
-/*	_racine.pere = NULL;
-	_racine.fils = NULL;*/
+	_racine.pere = NULL;
+//	_racine.fils = NULL;
 }
 
 //------------------------------------------------------------------------------
-QuadTree::~QuadTree(){		// A FINIR !!!
-	if(_taille > 0){
-		unsigned taille = _taille;
-		Noeud * ptr = _racine.pere;
-		for(unsigned i = 0; i < taille -1; i++){
-			ptr = ptr.fils[0];
-		} 
-		
-		ptr = ptr.pere;
-		for(int i = 0; i < 4; i++){
-			delete ptr.fils[i];
-		}
+QuadTree::~QuadTree(){
+	Noeud * ptr = &_racine;	
+	supprToutPtr(ptr);
+}
+
+//------------------------------------------------------------------------------
+Noeud* QuadTree::supprToutPtr(Noeud * ptr){
+	if(racine->fils[0] != NULL){
+		ptr = supprToutPtr(ptr->fils[0]);
 	}
+
+	if(racine->fils[1] != NULL) {
+		ptr = supprToutPtr(ptr->fils[1]);
+	}
+	
+	if(racine->fils[2] != NULL){
+		ptr = supprToutPtr(ptr->fils[2]);
+	}
+
+	if(racine->fils[3] != NULL){
+		ptr = supprToutPtr(ptr->fils[3]);
+	}
+
+	for(int i = 0; i < 4; i++){
+		delete ptr->fils[i];
+        ptr->fils[i] = NULL; // Au cas ou
+	}
+	
+	return ptr->pere;
 }
 
 //------------------------------------------------------------------------------
@@ -49,7 +65,7 @@ void QuadTree::afficher() const
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::importer(const ImagePNG & img)
+void QuadTree::importer(const ImagePNG & img) // A FINIR
 {
     Couleur pixel;
 
