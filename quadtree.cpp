@@ -13,18 +13,26 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 
 //------------------------------------------------------------------------------
-QuadTree::QuadTree()
-{
+QuadTree::QuadTree(){
 	_taille = 0;
-	_racine.pere = NULL;
-	_racine.fils = NULL;
-// À COMPLÉTER
+/*	_racine.pere = NULL;
+	_racine.fils = NULL;*/
 }
 
 //------------------------------------------------------------------------------
-QuadTree::~QuadTree()
-{
-// À COMPLÉTER
+QuadTree::~QuadTree(){		// A FINIR !!!
+	if(_taille > 0){
+		unsigned taille = _taille;
+		Noeud * ptr = _racine.pere;
+		for(unsigned i = 0; i < taille -1; i++){
+			ptr = ptr.fils[0];
+		} 
+		
+		ptr = ptr.pere;
+		for(int i = 0; i < 4; i++){
+			delete ptr.fils[i];
+		}
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -36,7 +44,6 @@ void QuadTree::afficher() const
     }
     else
     {
-        // utilise une fonction privée récursive
         afficher_rec(&_racine);
     }
 }
