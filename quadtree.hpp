@@ -114,6 +114,9 @@ class QuadTree
         static void afficher_rec(const Noeud * n, std::string tabs="");
 
         // EN AJOUTER AU BESOIN ...
+
+	// Fonction retournant un pointeur vers un Noeud réalisant la suppression entière de QuadTree (Utilisé lors de l'appelle du destructeur)
+	Noeud* supprToutPtr(Noeud * ptr);
 };
 
 #endif
