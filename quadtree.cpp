@@ -88,6 +88,7 @@ void QuadTree::importer(const ImagePNG & img) // A FINIR
 //------------------------------------------------------------------------------
 Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned taille, unsigned tabCpt[], const ImagePNG & image){
 	unsigned x, y;
+	unsigned color0 = 0, color1 = 0, color2 = 0, color3 = 0;
 	unsigned larg = image.largeur();
 	if(taille > 0){
 		for(int i = 0; i < 4; i++){
@@ -95,13 +96,27 @@ Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned taille, unsigned tabCpt[
 			ptr->fils[i]->pere = ptr;
 		}
 		ptr = creationQuadTree(ptr->fils[0], taille - 1, tabCpt);
-		tabCpt[_taille - taille] += 1;		
+		tabCpt[_taille - taille] += 1;		 		
 		ptr = creationQuadTree(ptr->fils[1], taille - 1, tabCpt);
 		tabCpt[_taille - taille] += 1;
 		ptr = creationQuadTree(ptr->fils[2], taille - 1, tabCpt);
 		tabCpt[_taille - taille] += 1;
 		ptr = creationQuadTree(ptr->fils[3], taille - 1, tabCpt);
 		tabCpt[_taille - taille] += 1;
+
+		for(int i = 0; i < 4; i++){	 // Pour la valeur de chaque fils
+			color0 += ((ptr->fils[0]->fils[i].rvb.R + ptr->fils[0]->fils[i].rvb.V + ptr->fils[0]->fils[i].rvb.B) / 3);
+			color1 += ((ptr->fils[1]->fils[i].rvb.R + ptr->fils[1]->fils[i].rvb.V + ptr->fils[1]->fils[i].rvb.B) / 3); 
+			color2 += ((ptr->fils[2]->fils[i].rvb.R + ptr->fils[2]->fils[i].rvb.V + ptr->fils[2]->fils[i].rvb.B) / 3);
+			color3 += ((ptr->fils[3]->fils[i].rvb.R + ptr->fils[3]->fils[i].rvb.V + ptr->fils[3]->fils[i].rvb.B) / 3);
+		}
+		// Pour la valeur du pere (moyenne des fils)
+		ptr->fils[0].rvb.R = ptr->fils[0].rvb.V = ptr->fils[0].rvb.B = (color0 + color1 + color2 + color3) /4;
+
+
+		// A FINIR POUR LES CAS NON FEUILLE DIECTE	
+
+
 	} else {
 		for(int i = 0; i < 4; i++){
 	        ptr->fils[i] = new Noeud; // Au cas ou
