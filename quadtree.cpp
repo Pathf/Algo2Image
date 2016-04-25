@@ -76,56 +76,59 @@ void QuadTree::importer(const ImagePNG & img) // A FINIR
 	}
 	
 	Noeud * ptr = &_racine;
-	_nbNoeud = 0;	
-	creationQuadTree(ptr, _taille - 1, 0, 0); // _taille -1 pour s'arretter au bon moment
+
+	unsigned tabCpt[_taille];
+
+	for(int i = 0; i < _taille; i++)
+		tabCpt[i] = 0;
+	
+	creationQuadTree(ptr, _taille - 1, tabCpt, img); // _taille -1 pour s'arretter au bon moment
 }
 
 //------------------------------------------------------------------------------
-Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned taille, unsigned posX, unsigned posY){
+Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned taille, unsigned tabCpt[], const ImagePNG & image){
 	unsigned x, y;
+	unsigned larg = image.largeur();
 	if(taille > 0){
 		for(int i = 0; i < 4; i++){
-        	ptr->fils[i] = new Noeud; // Au cas ou
+        	ptr->fils[i] = new Noeud;
 			ptr->fils[i]->pere = ptr;
 		}
-		ptr = creationQuadTree(ptr->fils[0], taille - 1, cpt);
-		ptr = creationQuadTree(ptr->fils[1], taille - 1, cpt);
-		ptr = creationQuadTree(ptr->fils[2], taille - 1, cpt);
-		ptr = creationQuadTree(ptr->fils[3], taille - 1, cpt);
-	}
-
-	for(int i = 0; i < 4; i++){
-        ptr->fils[i] = new Noeud; // Au cas ou
-		ptr->fils[i]->pere = ptr;
-		
-		if(i == 0){ 		// coordonnée : x = 0 et y = 0
-				x = posX;
-				y = posY;
-		} else if(i == 1){	// coordonnée : x = 1 et y = 0
-				x = posX + 1;
-				y = posY;
-		} else if(i == 2){	// coordonnée : x = 0 et y = 1
-				x = posX;
-				y = posY + 1;
-		} else {			// coordonnée : x = 1 et y = 1
-				x = posX + 1;
-				y = posY + 1;
-		}
-		ptr->fils[i].rvb = image.lirePixel(x,y);
-	}
-
-
-// A FINIR :
-	if(_taille > 1){
-		_nbNoeud++;
-	
-		if(_nbNoeud % 2 == 0){
-			posY += 2;
-		} else {
-			posX += 2;
+		ptr = creationQuadTree(ptr->fils[0], taille - 1, tabCpt);
+		tabCpt[_taille - taille] += 1;		
+		ptr = creationQuadTree(ptr->fils[1], taille - 1, tabCpt);
+		tabCpt[_taille - taille] += 1;
+		ptr = creationQuadTree(ptr->fils[2], taille - 1, tabCpt);
+		tabCpt[_taille - taille] += 1;
+		ptr = creationQuadTree(ptr->fils[3], taille - 1, tabCpt);
+		tabCpt[_taille - taille] += 1;
+	} else {
+		for(int i = 0; i < 4; i++){
+	        ptr->fils[i] = new Noeud; // Au cas ou
+			ptr->fils[i]->pere = ptr;
+			x = y = 0;
+			for(int j = 0; j < _taille; j++){
+				if(tabCpt[j] % 4 == 0){ 		// coordonnée : x = 0 et y = 0
+					x = x + 0;
+					y = y + 0;
+				} else if(tabCpt[j] % 4 == 1){	// coordonnée : x = 1 et y = 0
+					x = x + larg / 2;
+					y = y + 0;
+				} else if(tabCpt[j] % 4 == 2){	// coordonnée : x = 0 et y = 1
+					x = x + 0;
+					y = y + larg / 2;
+				} else {			// coordonnée : x = 1 et y = 1
+					x = x + larg / 2;
+					y = y + larg / 2;
+				}
+				larg = larg / 2;
+			}
+			tabCpt[_taille - 1] += 1; 
+			larg = image.largeur();
+			ptr->fils[i].rvb = image.lirePixel(x,y); // A VERIFF G UN DOUTE SUR LE POINT DE .rvb
 		}
 	}
-	
+
 	taille++; // car on revient un pas en arriere dans l'arbre
 	return ptr->pere;
 }
