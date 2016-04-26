@@ -27,32 +27,6 @@ QuadTree::~QuadTree(){
 }
 
 //------------------------------------------------------------------------------
-Noeud* QuadTree::supprToutPtr(Noeud * ptr){
-	if(ptr->fils[0] != NULL){
-		ptr = supprToutPtr(ptr->fils[0]);
-	}
-
-	if(ptr->fils[1] != NULL) {
-		ptr = supprToutPtr(ptr->fils[1]);
-	}
-	
-	if(ptr->fils[2] != NULL){
-		ptr = supprToutPtr(ptr->fils[2]);
-	}
-
-	if(ptr->fils[3] != NULL){
-		ptr = supprToutPtr(ptr->fils[3]);
-	}
-
-	for(int i = 0; i < 4; i++){
-		delete ptr->fils[i];
-        ptr->fils[i] = NULL; // Au cas ou
-	}
-	
-	return ptr->pere;
-}
-
-//------------------------------------------------------------------------------
 void QuadTree::afficher() const
 {
     if ( _taille == 0 )
@@ -83,69 +57,6 @@ void QuadTree::importer(const ImagePNG & img) // A FINIR
 		tabCpt[i] = 0;
 	
 	creationQuadTree(ptr, _taille - 1, tabCpt, img); // _taille -1 pour s'arretter au bon moment
-}
-
-//------------------------------------------------------------------------------
-Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned taille, unsigned tabCpt[], const ImagePNG & image){
-	unsigned x, y;
-	unsigned color0 = 0, color1 = 0, color2 = 0, color3 = 0;
-	unsigned larg = image.largeur();
-	if(taille > 0){
-		for(int i = 0; i < 4; i++){
-        	ptr->fils[i] = new Noeud;
-			ptr->fils[i]->pere = ptr;
-		}
-		ptr = creationQuadTree(ptr->fils[0], taille - 1, tabCpt);
-		tabCpt[_taille - taille] += 1;		 		
-		ptr = creationQuadTree(ptr->fils[1], taille - 1, tabCpt);
-		tabCpt[_taille - taille] += 1;
-		ptr = creationQuadTree(ptr->fils[2], taille - 1, tabCpt);
-		tabCpt[_taille - taille] += 1;
-		ptr = creationQuadTree(ptr->fils[3], taille - 1, tabCpt);
-		tabCpt[_taille - taille] += 1;
-
-		for(int i = 0; i < 4; i++){	 // Pour la valeur de chaque fils
-			color0 += ((ptr->fils[0]->fils[i].rvb.R + ptr->fils[0]->fils[i].rvb.V + ptr->fils[0]->fils[i].rvb.B) / 3);
-			color1 += ((ptr->fils[1]->fils[i].rvb.R + ptr->fils[1]->fils[i].rvb.V + ptr->fils[1]->fils[i].rvb.B) / 3); 
-			color2 += ((ptr->fils[2]->fils[i].rvb.R + ptr->fils[2]->fils[i].rvb.V + ptr->fils[2]->fils[i].rvb.B) / 3);
-			color3 += ((ptr->fils[3]->fils[i].rvb.R + ptr->fils[3]->fils[i].rvb.V + ptr->fils[3]->fils[i].rvb.B) / 3);
-		}
-		// Pour la valeur du pere (moyenne des fils)
-		ptr->fils[0].rvb.R = ptr->fils[0].rvb.V = ptr->fils[0].rvb.B = (color0 + color1 + color2 + color3) /4;
-
-
-		// A FINIR POUR LES CAS NON FEUILLE DIECTE	
-
-
-	} else {
-		for(int i = 0; i < 4; i++){
-	        ptr->fils[i] = new Noeud; // Au cas ou
-			ptr->fils[i]->pere = ptr;
-			x = y = 0;
-			for(int j = 0; j < _taille; j++){
-				if(tabCpt[j] % 4 == 0){ 		// coordonnée : x = 0 et y = 0
-					x = x + 0;
-					y = y + 0;
-				} else if(tabCpt[j] % 4 == 1){	// coordonnée : x = 1 et y = 0
-					x = x + larg / 2;
-					y = y + 0;
-				} else if(tabCpt[j] % 4 == 2){	// coordonnée : x = 0 et y = 1
-					x = x + 0;
-					y = y + larg / 2;
-				} else {			// coordonnée : x = 1 et y = 1
-					x = x + larg / 2;
-					y = y + larg / 2;
-				}
-				larg = larg / 2;
-			}
-			tabCpt[_taille - 1] += 1; 
-			larg = image.largeur();
-			ptr->fils[i].rvb = image.lirePixel(x,y); // A VERIFF G UN DOUTE SUR LE POINT DE .rvb
-		}
-	}
-
-	taille++; // car on revient un pas en arriere dans l'arbre
-	return ptr->pere;
 }
 
 //------------------------------------------------------------------------------
@@ -204,4 +115,86 @@ void QuadTree::compressionPhi(unsigned phi)
             afficher_rec(f,tabs+"   ");
         }
     }
+}
+
+//------------------------------------------------------------------------------
+Noeud* QuadTree::supprToutPtr(Noeud * ptr){
+	if(ptr->fils[0] != NULL){
+		ptr = supprToutPtr(ptr->fils[0]);
+	}
+
+	if(ptr->fils[1] != NULL) {
+		ptr = supprToutPtr(ptr->fils[1]);
+	}
+	
+	if(ptr->fils[2] != NULL){
+		ptr = supprToutPtr(ptr->fils[2]);
+	}
+
+	if(ptr->fils[3] != NULL){
+		ptr = supprToutPtr(ptr->fils[3]);
+	}
+
+	for(int i = 0; i < 4; i++){
+		delete ptr->fils[i];
+        ptr->fils[i] = NULL; // Au cas ou
+	}
+	
+	return ptr->pere;
+}
+
+//------------------------------------------------------------------------------
+Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned & taille, unsigned & tabCpt[], const ImagePNG & image){
+	unsigned x, y;
+	unsigned color = 0;
+	unsigned larg = image.largeur();
+	if(taille > 0){
+		for(int i = 0; i < 4; i++){
+        	ptr->fils[i] = new Noeud;
+			ptr->fils[i]->pere = ptr;
+		}
+		ptr = creationQuadTree(ptr->fils[0], taille - 1, tabCpt);
+		tabCpt[_taille - taille] += 1;		 		
+		ptr = creationQuadTree(ptr->fils[1], taille - 1, tabCpt);
+		tabCpt[_taille - taille] += 1;
+		ptr = creationQuadTree(ptr->fils[2], taille - 1, tabCpt);
+		tabCpt[_taille - taille] += 1;
+		ptr = creationQuadTree(ptr->fils[3], taille - 1, tabCpt);
+		tabCpt[_taille - taille] += 1;
+
+		for(int i = 0; i < 4; i++){	 // Pour la valeur de chaque fils
+			color += ((ptr->fils[i]->rvb.R + ptr->fils[i]->rvb.V + ptr->fils[i]->rvb.B) / 3);
+		}
+		// Pour la valeur du pere (moyenne des fils)
+		ptr->rvb.R = ptr->rvb.V = ptr->rvb.B = color /4;
+		color = 0;
+	} else {
+		for(int i = 0; i < 4; i++){
+	        ptr->fils[i] = new Noeud; // Au cas ou
+			ptr->fils[i]->pere = ptr;
+			x = y = 0;
+			for(int j = 0; j < _taille; j++){
+				if(tabCpt[j] % 4 == 0){ 		// coordonnée : x = 0 et y = 0
+					x = x + 0;
+					y = y + 0;
+				} else if(tabCpt[j] % 4 == 1){	// coordonnée : x = 1 et y = 0
+					x = x + larg / 2;
+					y = y + 0;
+				} else if(tabCpt[j] % 4 == 2){	// coordonnée : x = 0 et y = 1
+					x = x + 0;
+					y = y + larg / 2;
+				} else {			// coordonnée : x = 1 et y = 1
+					x = x + larg / 2;
+					y = y + larg / 2;
+				}
+				larg = larg / 2;
+			}
+			tabCpt[_taille - 1] += 1; 
+			larg = image.largeur();
+			ptr->fils[i]->rvb = image.lirePixel(x,y); // A VERIFF G UN DOUTE SUR LE POINT DE .rvb
+		}
+	}
+
+	taille++; // car on revient un pas en arriere dans l'arbre
+	return ptr->pere;
 }

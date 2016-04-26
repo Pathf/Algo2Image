@@ -113,10 +113,23 @@ class QuadTree
         // Fonction statique réalisant l'affichage récursivement depuis le noeud *n
         static void afficher_rec(const Noeud * n, std::string tabs="");
 
-        // EN AJOUTER AU BESOIN ...
+        // Ajout personnel :
+        /** --------------------------------------------------------------------
+         * @brief Suppression du QuadTree (Utilisation lors de l'appelle du destructeur)
+         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre
+         * 
+         * @b Complexité À COMPLÉTER
+        **/
+		Noeud* supprToutPtr(Noeud * ptr);
 
-	// Fonction retournant un pointeur vers un Noeud réalisant la suppression entière de QuadTree (Utilisé lors de l'appelle du destructeur)
-	Noeud* supprToutPtr(Noeud * ptr);
+        /** --------------------------------------------------------------------
+         * @brief Creation du QuadTree (Utilisation lors de l'importation de l'image)
+         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la taille de l'arbre -1, tabCpt est tableau contenant les zonnes par raport à la position dans l'arbre (position 0 = racine de l'arbre, position 1 un des fils de la racine, ... etc) et image est l'image qui est importé.
+         * @pre image format 2^n * 2^n
+         * 
+         * @b Complexité À COMPLÉTER
+        **/
+		Noeud* creationQuadTree(Noeud * ptr, unsigned & taille, unsigned & tabCpt[], const ImagePNG & image);
 };
 
 #endif
