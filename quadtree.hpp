@@ -130,6 +130,7 @@ class QuadTree
          * @b Complexité À COMPLÉTER
         **/
 		Noeud* creationQuadTree(Noeud * ptr, unsigned & taille, unsigned & tabCpt[], const ImagePNG & image);
+		void exporter_rec(Noeud* ptr, ImagePNG & img, unsigned x, unsigned y, unsigned taille);
 };
 
 #endif

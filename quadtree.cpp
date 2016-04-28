@@ -62,8 +62,17 @@ void QuadTree::importer(const ImagePNG & img) // A FINIR
 //------------------------------------------------------------------------------
 ImagePNG QuadTree::exporter() const
 {
-    ImagePNG img;
-// À COMPLÉTER
+	// reconstitution de la taille d'un coté
+	unsigned coteImage = 1;
+	for(int i = 0; i < _taille; i++)
+		coteImage *= 2;
+
+    ImagePNG img(coteImage, coteImage);
+
+	Noeud* ptr = _racine;
+
+	exporter_rec(ptr, img, 0, 0, coteImage);
+
     return img;
 }
 
@@ -170,7 +179,8 @@ Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned & taille, unsigned & tab
 		color = 0;
 	} else {
 		for(int i = 0; i < 4; i++){
-	        ptr->fils[i] = new Noeud; // Au cas ou
+	        ptr->fils[i] = new Noeud;
+			ptr->fils[i]->fils[0] = ptr->fils[i]->fils[1] = ptr->fils[i]->fils[2] = ptr->fils[i]->fils[3] = NULL; // Pour la destruction et l'exportation
 			ptr->fils[i]->pere = ptr;
 			x = y = 0;
 			for(int j = 0; j < _taille; j++){
@@ -197,4 +207,20 @@ Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned & taille, unsigned & tab
 
 	taille++; // car on revient un pas en arriere dans l'arbre
 	return ptr->pere;
+}
+
+//------------------------------------------------------------------------------
+void QuadTree::exporter_rec(Noeud* ptr, ImagePNG & img, unsigned x, unsigned y, unsigned taille){
+	if(ptr->fils[0] != NULL){
+			for(unsigned i = 0; i < taille ; i++){
+				for(unsigned j = 0; j < taille; j++){
+					img.ecrirePixel(x + i, y + j, ptr->rvb);
+				}
+			}
+	} else {
+		exporter_rec(ptr->fils[0], img, x, y, taille/2);
+		exporter_rec(ptr->fils[1], img, x + taille/2, y, taille/2);
+		exporter_rec(ptr->fils[2], img, x, y + taille/2, taille/2);
+		exporter_rec(ptr->fils[3], img, x + taille/2, y + taille/2, taille/2);
+	}
 }
