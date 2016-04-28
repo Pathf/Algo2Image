@@ -22,7 +22,7 @@ QuadTree::QuadTree(){
 
 //------------------------------------------------------------------------------
 QuadTree::~QuadTree(){	
-	supprToutPtr(&_racine);
+	destructeur(&_racine);
 }
 
 //------------------------------------------------------------------------------
@@ -45,12 +45,12 @@ void QuadTree::importer(const ImagePNG & img) // A FINIR
 		_taille++; // incremente pour obtenir la taille de l'arbre 
 	}
 
-	unsigned tabCpt[_taille];
+	tabCpt[_taille];
 
 	for(int i = 0; i < _taille; i++)
 		tabCpt[i] = 0;
 	
-	importer_rec(&_racine, _taille - 1, tabCpt, img); // _taille -1 pour s'arretter au bon moment
+	importer_rec(&_racine, _taille - 1, img); // _taille -1 pour s'arretter au bon moment
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ void QuadTree::compressionPhi(unsigned phi)
 
 //------------------------------------------------------------------------------
 /*static*/ QuadTree::bit QuadTree::kiemeBit(unsigned n, unsigned k)
-{   
+{
     bit b = 0;
     if ( k < 31 )
     {
@@ -119,21 +119,21 @@ void QuadTree::compressionPhi(unsigned phi)
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::supprToutPtr(Noeud * ptr){
+void QuadTree::destructeur(Noeud * ptr){
 	if(ptr->fils[0] != NULL){
-		supprToutPtr(ptr->fils[0]);
+		destructeur(ptr->fils[0]);
 	}
 
 	if(ptr->fils[1] != NULL) {
-		supprToutPtr(ptr->fils[1]);
+		destructeur(ptr->fils[1]);
 	}
 	
 	if(ptr->fils[2] != NULL){
-		supprToutPtr(ptr->fils[2]);
+		destructeur(ptr->fils[2]);
 	}
 
 	if(ptr->fils[3] != NULL){
-		supprToutPtr(ptr->fils[3]);
+		destructeur(ptr->fils[3]);
 	}
 
 	for(int i = 0; i < 4; i++){
@@ -143,22 +143,22 @@ void QuadTree::supprToutPtr(Noeud * ptr){
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::importer_rec(Noeud * ptr, unsigned & taille, unsigned & tabCpt[], const ImagePNG & image){
+void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img){
 	unsigned x, y;
 	unsigned color = 0;
-	unsigned larg = image.largeur();
+	unsigned larg = img.largeur();
 	if(taille > 0){
 		for(int i = 0; i < 4; i++){
         	ptr->fils[i] = new Noeud;
 			ptr->fils[i]->pere = ptr;
 		}
-		creationQuadTree(ptr->fils[0], taille - 1, tabCpt);
+		importer_rec(ptr->fils[0], taille - 1, img);
 		tabCpt[_taille - taille] += 1;		 		
-		creationQuadTree(ptr->fils[1], taille - 1, tabCpt);
+		importer_rec(ptr->fils[1], taille - 1, img);
 		tabCpt[_taille - taille] += 1;
-		creationQuadTree(ptr->fils[2], taille - 1, tabCpt);
+		importer_rec(ptr->fils[2], taille - 1, img);
 		tabCpt[_taille - taille] += 1;
-		creationQuadTree(ptr->fils[3], taille - 1, tabCpt);
+		importer_rec(ptr->fils[3], taille - 1, img);
 		tabCpt[_taille - taille] += 1;
 
 		for(int i = 0; i < 4; i++){	 // Pour la valeur de chaque fils
@@ -190,15 +190,16 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned & taille, unsigned & tabCpt[],
 				larg = larg / 2;
 			}
 			tabCpt[_taille - 1] += 1; 
-			larg = image.largeur();
-			ptr->fils[i]->rvb = image.lirePixel(x,y); // A VERIFF G UN DOUTE SUR LE POINT DE .rvb
+			larg = img.largeur();
+			ptr->fils[i]->rvb = img.lirePixel(x,y); // A VERIFF G UN DOUTE SUR LE POINT DE .rvb
 		}
 	}
 	taille++; // car on revient un pas en arriere dans l'arbre
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::exporter_rec(Noeud* ptr, ImagePNG & img, unsigned x, unsigned y, unsigned taille){
+void QuadTree::exporter_rec(const Noeud* ptr, ImagePNG & img, unsigned x, unsigned y, unsigned taille) const
+{
 	if(ptr->fils[0] != NULL){
 			for(unsigned i = 0; i < taille ; i++){
 				for(unsigned j = 0; j < taille; j++){

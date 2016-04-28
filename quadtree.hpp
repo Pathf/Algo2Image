@@ -99,13 +99,16 @@ class QuadTree
         
         // Noeud racine
         Noeud _racine;
-        
+		  
     //////////////////////////////////////////////////////////////////////////////////////
     // Fonctionnalités internes simplifiant l'implémentation des méthodes
     //////////////////////////////////////////////////////////////////////////////////////
 
         // Type interne représentant 1 bit (valeur 0 ou 1)
         typedef bool bit;
+
+		// tableau pour conserver les positions dans l'arbre
+		unsigned tabCpt[];
 
         // Fonction statique retournant la valeur du k-ième bit d'un entier positif n
         static bit kiemeBit(unsigned n, unsigned k);
@@ -120,7 +123,7 @@ class QuadTree
          * 
          * @b Complexité À COMPLÉTER
         **/
-		void supprToutPtr(Noeud * ptr);
+		void destructeur(Noeud * ptr);
 
         /** --------------------------------------------------------------------
          * @brief Creation du QuadTree (Utilisation lors de l'importation de l'image)
@@ -129,8 +132,8 @@ class QuadTree
          * 
          * @b Complexité À COMPLÉTER
         **/
-		void importer_rec(Noeud * ptr, unsigned & taille, unsigned & tabCpt[], const ImagePNG & image);
-		void exporter_rec(Noeud* ptr, ImagePNG & img, unsigned x, unsigned y, unsigned taille);
+		void importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img);
+		void exporter_rec(const Noeud* ptr, ImagePNG & img, unsigned x, unsigned y, unsigned taille) const;
 };
 
 #endif
