@@ -21,20 +21,16 @@ QuadTree::QuadTree(){
 }
 
 //------------------------------------------------------------------------------
-QuadTree::~QuadTree(){
-	Noeud * ptr = &_racine;	
-	supprToutPtr(ptr);
+QuadTree::~QuadTree(){	
+	supprToutPtr(&_racine);
 }
 
 //------------------------------------------------------------------------------
 void QuadTree::afficher() const
 {
-    if ( _taille == 0 )
-    {
+    if ( _taille == 0 ){
         cout << "Quadtree vide." << endl;
-    }
-    else
-    {
+    } else {
         afficher_rec(&_racine);
     }
 }
@@ -48,15 +44,13 @@ void QuadTree::importer(const ImagePNG & img) // A FINIR
 		larg /= 2;
 		_taille++; // incremente pour obtenir la taille de l'arbre 
 	}
-	
-	Noeud * ptr = &_racine;
 
 	unsigned tabCpt[_taille];
 
 	for(int i = 0; i < _taille; i++)
 		tabCpt[i] = 0;
 	
-	creationQuadTree(ptr, _taille - 1, tabCpt, img); // _taille -1 pour s'arretter au bon moment
+	importer_rec(&_racine, _taille - 1, tabCpt, img); // _taille -1 pour s'arretter au bon moment
 }
 
 //------------------------------------------------------------------------------
@@ -69,9 +63,7 @@ ImagePNG QuadTree::exporter() const
 
     ImagePNG img(coteImage, coteImage);
 
-	Noeud* ptr = _racine;
-
-	exporter_rec(ptr, img, 0, 0, coteImage);
+	exporter_rec(&_racine, img, 0, 0, coteImage);
 
     return img;
 }
@@ -96,14 +88,14 @@ void QuadTree::compressionPhi(unsigned phi)
 
 //------------------------------------------------------------------------------
 /*static*/ QuadTree::bit QuadTree::kiemeBit(unsigned n, unsigned k)
-{
-    
+{   
     bit b = 0;
     if ( k < 31 )
     {
         std::bitset<32> bits(n);
         b = bits[k];
     }
+
     return b;    
 }
 
@@ -127,33 +119,31 @@ void QuadTree::compressionPhi(unsigned phi)
 }
 
 //------------------------------------------------------------------------------
-Noeud* QuadTree::supprToutPtr(Noeud * ptr){
+void QuadTree::supprToutPtr(Noeud * ptr){
 	if(ptr->fils[0] != NULL){
-		ptr = supprToutPtr(ptr->fils[0]);
+		supprToutPtr(ptr->fils[0]);
 	}
 
 	if(ptr->fils[1] != NULL) {
-		ptr = supprToutPtr(ptr->fils[1]);
+		supprToutPtr(ptr->fils[1]);
 	}
 	
 	if(ptr->fils[2] != NULL){
-		ptr = supprToutPtr(ptr->fils[2]);
+		supprToutPtr(ptr->fils[2]);
 	}
 
 	if(ptr->fils[3] != NULL){
-		ptr = supprToutPtr(ptr->fils[3]);
+		supprToutPtr(ptr->fils[3]);
 	}
 
 	for(int i = 0; i < 4; i++){
 		delete ptr->fils[i];
         ptr->fils[i] = NULL; // Au cas ou
 	}
-	
-	return ptr->pere;
 }
 
 //------------------------------------------------------------------------------
-Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned & taille, unsigned & tabCpt[], const ImagePNG & image){
+void QuadTree::importer_rec(Noeud * ptr, unsigned & taille, unsigned & tabCpt[], const ImagePNG & image){
 	unsigned x, y;
 	unsigned color = 0;
 	unsigned larg = image.largeur();
@@ -162,13 +152,13 @@ Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned & taille, unsigned & tab
         	ptr->fils[i] = new Noeud;
 			ptr->fils[i]->pere = ptr;
 		}
-		ptr = creationQuadTree(ptr->fils[0], taille - 1, tabCpt);
+		creationQuadTree(ptr->fils[0], taille - 1, tabCpt);
 		tabCpt[_taille - taille] += 1;		 		
-		ptr = creationQuadTree(ptr->fils[1], taille - 1, tabCpt);
+		creationQuadTree(ptr->fils[1], taille - 1, tabCpt);
 		tabCpt[_taille - taille] += 1;
-		ptr = creationQuadTree(ptr->fils[2], taille - 1, tabCpt);
+		creationQuadTree(ptr->fils[2], taille - 1, tabCpt);
 		tabCpt[_taille - taille] += 1;
-		ptr = creationQuadTree(ptr->fils[3], taille - 1, tabCpt);
+		creationQuadTree(ptr->fils[3], taille - 1, tabCpt);
 		tabCpt[_taille - taille] += 1;
 
 		for(int i = 0; i < 4; i++){	 // Pour la valeur de chaque fils
@@ -204,9 +194,7 @@ Noeud* QuadTree::creationQuadTree(Noeud * ptr, unsigned & taille, unsigned & tab
 			ptr->fils[i]->rvb = image.lirePixel(x,y); // A VERIFF G UN DOUTE SUR LE POINT DE .rvb
 		}
 	}
-
 	taille++; // car on revient un pas en arriere dans l'arbre
-	return ptr->pere;
 }
 
 //------------------------------------------------------------------------------

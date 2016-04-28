@@ -120,7 +120,7 @@ class QuadTree
          * 
          * @b Complexité À COMPLÉTER
         **/
-		Noeud* supprToutPtr(Noeud * ptr);
+		void supprToutPtr(Noeud * ptr);
 
         /** --------------------------------------------------------------------
          * @brief Creation du QuadTree (Utilisation lors de l'importation de l'image)
@@ -129,7 +129,7 @@ class QuadTree
          * 
          * @b Complexité À COMPLÉTER
         **/
-		Noeud* creationQuadTree(Noeud * ptr, unsigned & taille, unsigned & tabCpt[], const ImagePNG & image);
+		void importer_rec(Noeud * ptr, unsigned & taille, unsigned & tabCpt[], const ImagePNG & image);
 		void exporter_rec(Noeud* ptr, ImagePNG & img, unsigned x, unsigned y, unsigned taille);
 };
 
