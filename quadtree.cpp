@@ -17,8 +17,6 @@ using namespace std;
 QuadTree::QuadTree(){
 	_taille = 0;
 	_racine.pere = nullptr;
-	for(auto & f : _racine.fils)
-		f = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -39,19 +37,13 @@ void QuadTree::afficher() const
 //------------------------------------------------------------------------------
 void QuadTree::importer(const ImagePNG & img) // A FINIR
 {
-	unsigned larg = img.largeur();
-
+	_taille = 0;
+	unsigned larg = img.largeur();		
 	while(larg != 1){
 		larg /= 2;
 		_taille++; // incremente pour obtenir la taille de l'arbre 
 	}
-
-	tabCpt[_taille];
-
-	for(int i = 0; i < _taille; i++)
-		tabCpt[i] = 0;
-	
-	importer_rec(&_racine, larg, img, 0, 0); // _taille -1 pour s'arretter au bon moment
+	importer_rec(&_racine, img.largeur(), img, 0, 0); // _taille -1 pour s'arretter au bon moment
 }
 
 //------------------------------------------------------------------------------
@@ -63,8 +55,7 @@ ImagePNG QuadTree::exporter() const
 		coteImage *= 2;
 
     ImagePNG img(coteImage, coteImage);
-
-	exporter_rec(&_racine, img, 0, 0, coteImage);
+	exporter_rec(&_racine, coteImage, img, 0, 0);
 
     return img;
 }
@@ -121,85 +112,56 @@ void QuadTree::compressionPhi(unsigned phi)
 
 //------------------------------------------------------------------------------
 void QuadTree::destructeur(Noeud * ptr){
-	for(auto f : ptr->fils)
-		if(f)
-			destructeur(f);
+	for(int i=0; i < 4; i++)
+		if(ptr->fils[i] != nullptr)
+			destructeur(ptr->fils[i]);
 
-	for(auto f : ptr->fils)
-		delete f;
+	for(int j=0; j < 4; j++)
+		delete ptr->fils[j];
 }
 
 //------------------------------------------------------------------------------
 void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y){
-	Couleur color;
-	vector<Couleur> vectTmp;
-	unsigned larg = img.largeur();
-	if(taille < 1){
-	cout << "cp";
+	if(taille > 2){
 		for(int i = 0; i < 4; i++){
         	ptr->fils[i] = new Noeud;
 			ptr->fils[i]->pere = ptr;
 		}
-		importer_rec(ptr->fils[0], larg / 2, img, x, y);
-		importer_rec(ptr->fils[1], larg / 2, img, x + larg/2, y);
-		importer_rec(ptr->fils[2], larg / 2, img, x, y + larg / 2);
-		importer_rec(ptr->fils[3], larg / 2, img, x + larg / 2, y + larg / 2);
-		//	tabCpt[_taille - taille] += 1;		 		
-		
-
-		for(int i = 0; i < 4; i++){	 // Pour la valeur de chaque fils
-			vectTmp.push_back(ptr->fils[i]->rvb);
-			//color += ((ptr->fils[i]->rvb.R + ptr->fils[i]->rvb.V + ptr->fils[i]->rvb.B) / 3); //conservé pour compat TODO virer quand fini
-		}
-
-		cout << color.R << " " << color.V << " " << color.B << "\n";
-		// Pour la valeur du pere (moyenne des fils)
-		color = moyenne(vectTmp);
-		ptr->rvb = color;//conservé pour compat TODO virer quand fini
-		//color = 0;//conservé pour compat TODO virer quand fini
+		importer_rec(ptr->fils[0], taille/2, img, x, y);
+		importer_rec(ptr->fils[1], taille/2, img, x + (taille/2), y);
+		importer_rec(ptr->fils[2], taille/2, img, x, y + (taille/2));
+		importer_rec(ptr->fils[3], taille/2, img, x + (taille/2), y + (taille/2));
 	} else {
 		for(int i = 0; i < 4; i++){
 	        ptr->fils[i] = new Noeud;
 			for(int j = 0; j < 4; j++)
-				ptr->fils[i]->fils[j] = nullptr; // Pour la destruction et l'exportation
-			ptr->fils[i]->pere = ptr;
-			/*x = y = 0;
-			for(int j = 0; j < _taille; j++){
-				if(tabCpt[j] % 4 == 0){ 		// coordonnée : x = 0 et y = 0
-					x = x + 0;
-					y = y + 0;
-				} else if(tabCpt[j] % 4 == 1){	// coordonnée : x = 1 et y = 0
-					x = x + larg / 2;
-					y = y + 0;
-				} else if(tabCpt[j] % 4 == 2){	// coordonnée : x = 0 et y = 1
-					x = x + 0;
-					y = y + larg / 2;
-				} else {			// coordonnée : x = 1 et y = 1
-					x = x + larg / 2;
-					y = y + larg / 2;
-				}
-				larg = larg / 2;
-			}*/
-			tabCpt[_taille - 1] += 1; 
-			//larg = img.largeur();
-			ptr->fils[i]->rvb = img.lirePixel(x,y); // A VERIFF G UN DOUTE SUR LE POINT DE .rvb
+				ptr->fils[i]->fils[j] = nullptr;
+			ptr->fils[i]->pere = ptr;		
 		}
+		ptr->fils[0]->rvb = img.lirePixel(x,y);
+		ptr->fils[1]->rvb = img.lirePixel(x+1,y);
+		ptr->fils[2]->rvb = img.lirePixel(x,y+1);
+		ptr->fils[3]->rvb = img.lirePixel(x+1,y+1);
 	}
+
+	vector<Couleur> vectTmp;
+	for(int i = 0; i < 4; i++)	 // Pour la valeur de chaque fils
+		vectTmp.push_back(ptr->fils[i]->rvb);
+
+	// Pour la valeur du pere (moyenne des fils)
+	ptr->rvb = moyenne(vectTmp);
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::exporter_rec(const Noeud* ptr, ImagePNG & img, unsigned x, unsigned y, unsigned taille) const
-{
-	if(ptr->fils[0] != NULL){
-			for(unsigned i = 0; i < taille ; i++){
-				for(unsigned j = 0; j < taille; j++){
+void QuadTree::exporter_rec(const Noeud* ptr,  unsigned taille, ImagePNG & img, unsigned x, unsigned y) const {
+	if(ptr->fils[0] != nullptr)
+			for(unsigned i = 0; i < taille ; i++)
+				for(unsigned j = 0; j < taille; j++)
 					img.ecrirePixel(x + i, y + j, ptr->rvb);
-				}
-			}
-	} else {
-		exporter_rec(ptr->fils[0], img, x, y, taille/2);
-		exporter_rec(ptr->fils[1], img, x + taille/2, y, taille/2);
-		exporter_rec(ptr->fils[2], img, x, y + taille/2, taille/2);
-		exporter_rec(ptr->fils[3], img, x + taille/2, y + taille/2, taille/2);
+	else {
+		exporter_rec(ptr->fils[0], taille/2, img, x, y);
+		exporter_rec(ptr->fils[1], taille/2, img, x + taille/2, y);
+		exporter_rec(ptr->fils[2], taille/2, img, x, y + taille/2);
+		exporter_rec(ptr->fils[3], taille/2, img, x + taille/2, y + taille/2);
 	}
 }
