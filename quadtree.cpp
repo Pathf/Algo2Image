@@ -62,15 +62,17 @@ ImagePNG QuadTree::exporter() const{
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::compressionDelta(unsigned delta)
-{
-// À COMPLÉTER
+void QuadTree::compressionDelta(unsigned delta){ // A FINIR
+	assert(delta < 255);
+	if(delta == 0)
+		compressionSansPerte_rec(&_racine);
+	else
+		compressionDelta_rec(&_racine, delta);
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::compressionPhi(unsigned phi)
-{
-// À COMPLÉTER
+void QuadTree::compressionPhi(unsigned phi){ // A FINIR
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,14 +133,14 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, 
 	}
 
 	if(taille > 2){
-		importer_rec(ptr->fils[0], taille/2, img, x, y);
-		importer_rec(ptr->fils[1], taille/2, img, x + (taille/2), y);
-		importer_rec(ptr->fils[2], taille/2, img, x, y + (taille/2));
+		importer_rec(ptr->fils[0], taille/2, img, x, y);	
+		importer_rec(ptr->fils[1], taille/2, img, x, y + (taille/2));
+		importer_rec(ptr->fils[2], taille/2, img, x + (taille/2), y);		
 		importer_rec(ptr->fils[3], taille/2, img, x + (taille/2), y + (taille/2));
 	} else {
 		ptr->fils[0]->rvb = img.lirePixel(x,y);
-		ptr->fils[1]->rvb = img.lirePixel(x+1,y);
-		ptr->fils[2]->rvb = img.lirePixel(x,y+1);
+		ptr->fils[1]->rvb = img.lirePixel(x,y+1);
+		ptr->fils[2]->rvb = img.lirePixel(x+1,y);
 		ptr->fils[3]->rvb = img.lirePixel(x+1,y+1);
 	}
 
@@ -158,8 +160,18 @@ void QuadTree::exporter_rec(const Noeud* ptr,  unsigned taille, ImagePNG & img, 
 					img.ecrirePixel(x + i, y + j, ptr->rvb);
 	else {
 		exporter_rec(ptr->fils[0], taille/2, img, x, y);
-		exporter_rec(ptr->fils[1], taille/2, img, x + taille/2, y);
-		exporter_rec(ptr->fils[2], taille/2, img, x, y + taille/2);
+		exporter_rec(ptr->fils[1], taille/2, img, x, y + taille/2);
+		exporter_rec(ptr->fils[2], taille/2, img, x + taille/2, y);
 		exporter_rec(ptr->fils[3], taille/2, img, x + taille/2, y + taille/2);
 	}
+}
+
+//------------------------------------------------------------------------------
+void QuadTree::compressionSansPerte_rec(Noeud* ptr){
+
+}
+
+//------------------------------------------------------------------------------
+void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned delta){
+
 }

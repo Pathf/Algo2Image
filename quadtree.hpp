@@ -130,6 +130,7 @@ class QuadTree
          * @b Complexité À COMPLÉTER
         **/
 		void importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y);
+		
 		/** --------------------------------------------------------------------
          * @brief Creation d'une image grace au QuadTree (Utilisation lors de l'exportation de l'image)
          * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la taille de l'arbre -1, tabCpt est tableau contenant les zonnes par raport à la position dans l'arbre (position 0 = racine de l'arbre, position 1 un des fils de la racine, ... etc) et image est l'image qui est importé.
@@ -138,6 +139,23 @@ class QuadTree
          * @b Complexité À COMPLÉTER
         **/
 		void exporter_rec(const Noeud* ptr, unsigned taille, ImagePNG & img, unsigned x, unsigned y) const;
-};
 
+		/** --------------------------------------------------------------------
+         * @brief Compression d'une avec un delta (Utilisation lors de la compressionDelta de l'image)
+         * @param 
+         * @pre 
+         * 
+         * @b Complexité À COMPLÉTER
+        **/
+		void compressionDelta_rec(Noeud* ptr, unsigned delta);
+
+		/** --------------------------------------------------------------------
+         * @brief Compression d'une avec un delta (Utilisation lors de la compressionDelta de l'image)
+         * @param 
+         * @pre 
+         * 
+         * @b Complexité À COMPLÉTER
+        **/
+		void compressionSansPerte_rec(Noeud* ptr);
+};
 #endif

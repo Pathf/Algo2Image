@@ -46,7 +46,7 @@ Couleur moyenne(std::vector<Couleur> cs);
 /**
  * @brief Calcule la différence de luminance de deux couleurs
  * @param c1 La couleur 1
- * @param c2 La couleur 3
+ * @param c2 La couleur 2
  * @return La différence de luminance entre c1 et c2
  * 
  * @b Complexité θ(1)
