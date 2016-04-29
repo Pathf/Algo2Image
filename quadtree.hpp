@@ -132,7 +132,7 @@ class QuadTree
          * 
          * @b Complexité À COMPLÉTER
         **/
-		void importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img);
+		void importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y);
 		void exporter_rec(const Noeud* ptr, ImagePNG & img, unsigned x, unsigned y, unsigned taille) const;
 };
 

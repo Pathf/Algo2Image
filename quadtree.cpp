@@ -51,7 +51,7 @@ void QuadTree::importer(const ImagePNG & img) // A FINIR
 	for(int i = 0; i < _taille; i++)
 		tabCpt[i] = 0;
 	
-	importer_rec(&_racine, _taille - 1, img); // _taille -1 pour s'arretter au bon moment
+	importer_rec(&_racine, larg, img, 0, 0); // _taille -1 pour s'arretter au bon moment
 }
 
 //------------------------------------------------------------------------------
@@ -130,30 +130,32 @@ void QuadTree::destructeur(Noeud * ptr){
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img){
-	unsigned x, y;
+void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y){
 	Couleur color;
 	vector<Couleur> vectTmp;
 	unsigned larg = img.largeur();
-	if(taille > 0){
+	if(taille < 1){
+	cout << "cp";
 		for(int i = 0; i < 4; i++){
         	ptr->fils[i] = new Noeud;
 			ptr->fils[i]->pere = ptr;
 		}
-
-		for(auto f : ptr->fils){
-			importer_rec(f, taille - 1, img);
-			tabCpt[_taille - taille] += 1;		 		
-		}
+		importer_rec(ptr->fils[0], larg / 2, img, x, y);
+		importer_rec(ptr->fils[1], larg / 2, img, x + larg/2, y);
+		importer_rec(ptr->fils[2], larg / 2, img, x, y + larg / 2);
+		importer_rec(ptr->fils[3], larg / 2, img, x + larg / 2, y + larg / 2);
+		//	tabCpt[_taille - taille] += 1;		 		
+		
 
 		for(int i = 0; i < 4; i++){	 // Pour la valeur de chaque fils
-			vectTmp[i] = ptr->fils[i]->rvb;
+			vectTmp.push_back(ptr->fils[i]->rvb);
 			//color += ((ptr->fils[i]->rvb.R + ptr->fils[i]->rvb.V + ptr->fils[i]->rvb.B) / 3); //conservé pour compat TODO virer quand fini
 		}
 
+		cout << color.R << " " << color.V << " " << color.B << "\n";
 		// Pour la valeur du pere (moyenne des fils)
 		color = moyenne(vectTmp);
-		//ptr->rvb.R = ptr->rvb.V = ptr->rvb.B = color /4;//conservé pour compat TODO virer quand fini
+		ptr->rvb = color;//conservé pour compat TODO virer quand fini
 		//color = 0;//conservé pour compat TODO virer quand fini
 	} else {
 		for(int i = 0; i < 4; i++){
@@ -161,7 +163,7 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img){
 			for(int j = 0; j < 4; j++)
 				ptr->fils[i]->fils[j] = nullptr; // Pour la destruction et l'exportation
 			ptr->fils[i]->pere = ptr;
-			x = y = 0;
+			/*x = y = 0;
 			for(int j = 0; j < _taille; j++){
 				if(tabCpt[j] % 4 == 0){ 		// coordonnée : x = 0 et y = 0
 					x = x + 0;
@@ -177,13 +179,12 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img){
 					y = y + larg / 2;
 				}
 				larg = larg / 2;
-			}
+			}*/
 			tabCpt[_taille - 1] += 1; 
-			larg = img.largeur();
+			//larg = img.largeur();
 			ptr->fils[i]->rvb = img.lirePixel(x,y); // A VERIFF G UN DOUTE SUR LE POINT DE .rvb
 		}
 	}
-	taille++; // car on revient un pas en arriere dans l'arbre
 }
 
 //------------------------------------------------------------------------------
