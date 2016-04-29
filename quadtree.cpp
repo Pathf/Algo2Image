@@ -132,7 +132,8 @@ void QuadTree::destructeur(Noeud * ptr){
 //------------------------------------------------------------------------------
 void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img){
 	unsigned x, y;
-	unsigned color = 0;
+	Couleur color;
+	vector<Couleur> vectTmp;
 	unsigned larg = img.largeur();
 	if(taille > 0){
 		for(int i = 0; i < 4; i++){
@@ -146,12 +147,14 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img){
 		}
 
 		for(int i = 0; i < 4; i++){	 // Pour la valeur de chaque fils
-			color += ((ptr->fils[i]->rvb.R + ptr->fils[i]->rvb.V + ptr->fils[i]->rvb.B) / 3);
+			vectTmp[i] = ptr->fils[i]->rvb;
+			//color += ((ptr->fils[i]->rvb.R + ptr->fils[i]->rvb.V + ptr->fils[i]->rvb.B) / 3); //conservé pour compat TODO virer quand fini
 		}
 
 		// Pour la valeur du pere (moyenne des fils)
-		ptr->rvb.R = ptr->rvb.V = ptr->rvb.B = color /4;
-		color = 0;
+		color = moyenne(vectTmp);
+		//ptr->rvb.R = ptr->rvb.V = ptr->rvb.B = color /4;//conservé pour compat TODO virer quand fini
+		//color = 0;//conservé pour compat TODO virer quand fini
 	} else {
 		for(int i = 0; i < 4; i++){
 	        ptr->fils[i] = new Noeud;
