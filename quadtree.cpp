@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cmath>
 #include "quadtree.hpp"
+#include <vector>
 
 using namespace std;
 
@@ -15,9 +16,9 @@ using namespace std;
 //------------------------------------------------------------------------------
 QuadTree::QuadTree(){
 	_taille = 0;
-	_racine.pere = NULL;
-	for(int i = 0; i < 3; i++)
-		_racine.fils[i] = NULL;
+	_racine.pere = nullptr;
+	for(auto & f : _racine.fils)
+		f = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -120,26 +121,12 @@ void QuadTree::compressionPhi(unsigned phi)
 
 //------------------------------------------------------------------------------
 void QuadTree::destructeur(Noeud * ptr){
-	if(ptr->fils[0] != NULL){
-		destructeur(ptr->fils[0]);
-	}
+	for(auto f : ptr->fils)
+		if(f)
+			destructeur(f);
 
-	if(ptr->fils[1] != NULL) {
-		destructeur(ptr->fils[1]);
-	}
-	
-	if(ptr->fils[2] != NULL){
-		destructeur(ptr->fils[2]);
-	}
-
-	if(ptr->fils[3] != NULL){
-		destructeur(ptr->fils[3]);
-	}
-
-	for(int i = 0; i < 4; i++){
-		delete ptr->fils[i];
-        ptr->fils[i] = NULL; // Au cas ou
-	}
+	for(auto f : ptr->fils)
+		delete f;
 }
 
 //------------------------------------------------------------------------------
@@ -152,25 +139,24 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img){
         	ptr->fils[i] = new Noeud;
 			ptr->fils[i]->pere = ptr;
 		}
-		importer_rec(ptr->fils[0], taille - 1, img);
-		tabCpt[_taille - taille] += 1;		 		
-		importer_rec(ptr->fils[1], taille - 1, img);
-		tabCpt[_taille - taille] += 1;
-		importer_rec(ptr->fils[2], taille - 1, img);
-		tabCpt[_taille - taille] += 1;
-		importer_rec(ptr->fils[3], taille - 1, img);
-		tabCpt[_taille - taille] += 1;
+
+		for(auto f : ptr->fils){
+			importer_rec(f, taille - 1, img);
+			tabCpt[_taille - taille] += 1;		 		
+		}
 
 		for(int i = 0; i < 4; i++){	 // Pour la valeur de chaque fils
 			color += ((ptr->fils[i]->rvb.R + ptr->fils[i]->rvb.V + ptr->fils[i]->rvb.B) / 3);
 		}
+
 		// Pour la valeur du pere (moyenne des fils)
 		ptr->rvb.R = ptr->rvb.V = ptr->rvb.B = color /4;
 		color = 0;
 	} else {
 		for(int i = 0; i < 4; i++){
 	        ptr->fils[i] = new Noeud;
-			ptr->fils[i]->fils[0] = ptr->fils[i]->fils[1] = ptr->fils[i]->fils[2] = ptr->fils[i]->fils[3] = NULL; // Pour la destruction et l'exportation
+			for(int j = 0; j < 4; j++)
+				ptr->fils[i]->fils[j] = nullptr; // Pour la destruction et l'exportation
 			ptr->fils[i]->pere = ptr;
 			x = y = 0;
 			for(int j = 0; j < _taille; j++){
