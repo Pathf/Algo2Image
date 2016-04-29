@@ -17,6 +17,8 @@ using namespace std;
 QuadTree::QuadTree(){
 	_taille = 0;
 	_racine.pere = nullptr;
+	for(int i=0; i < 4; i++)
+		_racine.fils[i] = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -38,7 +40,7 @@ void QuadTree::afficher() const
 void QuadTree::importer(const ImagePNG & img) // A FINIR
 {
 	_taille = 0;
-	unsigned larg = img.largeur();		
+	unsigned larg = img.largeur();	
 	while(larg != 1){
 		larg /= 2;
 		_taille++; // incremente pour obtenir la taille de l'arbre 
@@ -47,8 +49,7 @@ void QuadTree::importer(const ImagePNG & img) // A FINIR
 }
 
 //------------------------------------------------------------------------------
-ImagePNG QuadTree::exporter() const
-{
+ImagePNG QuadTree::exporter() const{
 	// reconstitution de la taille d'un coté
 	unsigned coteImage = 1;
 	for(int i = 0; i < _taille; i++)
@@ -122,22 +123,19 @@ void QuadTree::destructeur(Noeud * ptr){
 
 //------------------------------------------------------------------------------
 void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y){
+	for(int i = 0; i < 4; i++){
+		ptr->fils[i] = new Noeud;
+		ptr->fils[i]->pere = ptr;
+		for(int j = 0; j < 4; j++)
+			ptr->fils[i]->fils[j] = nullptr;
+	}
+
 	if(taille > 2){
-		for(int i = 0; i < 4; i++){
-        	ptr->fils[i] = new Noeud;
-			ptr->fils[i]->pere = ptr;
-		}
 		importer_rec(ptr->fils[0], taille/2, img, x, y);
 		importer_rec(ptr->fils[1], taille/2, img, x + (taille/2), y);
 		importer_rec(ptr->fils[2], taille/2, img, x, y + (taille/2));
 		importer_rec(ptr->fils[3], taille/2, img, x + (taille/2), y + (taille/2));
 	} else {
-		for(int i = 0; i < 4; i++){
-	        ptr->fils[i] = new Noeud;
-			for(int j = 0; j < 4; j++)
-				ptr->fils[i]->fils[j] = nullptr;
-			ptr->fils[i]->pere = ptr;		
-		}
 		ptr->fils[0]->rvb = img.lirePixel(x,y);
 		ptr->fils[1]->rvb = img.lirePixel(x+1,y);
 		ptr->fils[2]->rvb = img.lirePixel(x,y+1);
@@ -145,7 +143,7 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, 
 	}
 
 	vector<Couleur> vectTmp;
-	for(int i = 0; i < 4; i++)	 // Pour la valeur de chaque fils
+	for(int i = 0; i < 4; i++)
 		vectTmp.push_back(ptr->fils[i]->rvb);
 
 	// Pour la valeur du pere (moyenne des fils)

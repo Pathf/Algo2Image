@@ -107,9 +107,6 @@ class QuadTree
         // Type interne représentant 1 bit (valeur 0 ou 1)
         typedef bool bit;
 
-		// tableau pour conserver les positions dans l'arbre
-		unsigned tabCpt[];
-
         // Fonction statique retournant la valeur du k-ième bit d'un entier positif n
         static bit kiemeBit(unsigned n, unsigned k);
 
@@ -127,12 +124,19 @@ class QuadTree
 
         /** --------------------------------------------------------------------
          * @brief Creation du QuadTree (Utilisation lors de l'importation de l'image)
-         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la taille de l'arbre -1, tabCpt est tableau contenant les zonnes par raport à la position dans l'arbre (position 0 = racine de l'arbre, position 1 un des fils de la racine, ... etc) et image est l'image qui est importé.
+         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la largeur de l'image, image est l'image qui est importé, x et y sont les positions pour placer les pixels au bon endroit dans l'arbre.
          * @pre image format 2^n * 2^n
          * 
          * @b Complexité À COMPLÉTER
         **/
 		void importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y);
+		/** --------------------------------------------------------------------
+         * @brief Creation d'une image grace au QuadTree (Utilisation lors de l'exportation de l'image)
+         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la taille de l'arbre -1, tabCpt est tableau contenant les zonnes par raport à la position dans l'arbre (position 0 = racine de l'arbre, position 1 un des fils de la racine, ... etc) et image est l'image qui est importé.
+         * @pre image format 2^n * 2^n
+         * 
+         * @b Complexité À COMPLÉTER
+        **/
 		void exporter_rec(const Noeud* ptr, unsigned taille, ImagePNG & img, unsigned x, unsigned y) const;
 };
 
