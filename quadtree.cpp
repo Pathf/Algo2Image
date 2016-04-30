@@ -160,11 +160,12 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, 
 
 //------------------------------------------------------------------------------
 void QuadTree::exporter_rec(const Noeud* ptr,  unsigned taille, ImagePNG & img, unsigned x, unsigned y) const {
-	if(ptr->fils[0] != nullptr)
+	if(ptr->fils[0] == nullptr)
 			for(unsigned i = 0; i < taille ; i++)
 				for(unsigned j = 0; j < taille; j++)
 					img.ecrirePixel(x + i, y + j, ptr->rvb);
 	else {
+		cout << "yop\n";
 		exporter_rec(ptr->fils[0], taille/2, img, x, y);
 		exporter_rec(ptr->fils[1], taille/2, img, x, y + taille/2);
 		exporter_rec(ptr->fils[2], taille/2, img, x + taille/2, y);

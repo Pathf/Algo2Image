@@ -18,14 +18,15 @@ int main()
     arbre.importer(originale);
     arbre.afficher();
 
+
     cout << endl << "-------------------------------------------------" << endl;
     cout << "Sans perte :" << endl;
     arbre.importer(originale);
     arbre.compressionDelta(0);
     arbre.afficher();
-/*    compressee = arbre.exporter();
+    compressee = arbre.exporter();
     compressee.sauver("zip-d000-"+fichier);
-
+/*
     cout << endl << "-------------------------------------------------" << endl;
     cout << "Delta=128 :" << endl;
     arbre.importer(originale);
