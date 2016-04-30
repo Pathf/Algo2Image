@@ -141,6 +141,15 @@ class QuadTree
 		void exporter_rec(const Noeud* ptr, unsigned taille, ImagePNG & img, unsigned x, unsigned y) const;
 
 		/** --------------------------------------------------------------------
+         * @brief Compression d'une image sans perte (Utilisation lors de la compressionDelta de l'image)
+         * @param ptr est le pointeur permettant de se mouvoir dans l'arbre
+         * @pre delta == 0
+         * 
+         * @b Complexité À COMPLÉTER
+        **/
+		void compressionSansPerte_rec(Noeud* ptr, unsigned taille);
+
+		/** --------------------------------------------------------------------
          * @brief Compression d'une avec un delta (Utilisation lors de la compressionDelta de l'image)
          * @param 
          * @pre 
@@ -156,6 +165,6 @@ class QuadTree
          * 
          * @b Complexité À COMPLÉTER
         **/
-		void compressionSansPerte_rec(Noeud* ptr);
+		void compressionPhi_rec(Noeud* ptr, unsigned phi);
 };
 #endif

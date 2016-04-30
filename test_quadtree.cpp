@@ -19,11 +19,11 @@ int main()
     arbre.afficher();
 
     cout << endl << "-------------------------------------------------" << endl;
-/*    cout << "Sans perte :" << endl;
+    cout << "Sans perte :" << endl;
     arbre.importer(originale);
     arbre.compressionDelta(0);
     arbre.afficher();
-    compressee = arbre.exporter();
+/*    compressee = arbre.exporter();
     compressee.sauver("zip-d000-"+fichier);
 
     cout << endl << "-------------------------------------------------" << endl;

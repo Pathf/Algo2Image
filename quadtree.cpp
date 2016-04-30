@@ -64,15 +64,19 @@ ImagePNG QuadTree::exporter() const{
 //------------------------------------------------------------------------------
 void QuadTree::compressionDelta(unsigned delta){ // A FINIR
 	assert(delta < 255);
+	unsigned tailleI = 1;
+	for(int i = 0; i < _taille; i++)
+		tailleI *= 2;
+
 	if(delta == 0)
-		compressionSansPerte_rec(&_racine);
+		compressionSansPerte_rec(&_racine, tailleI);
 	else
 		compressionDelta_rec(&_racine, delta);
 }
 
 //------------------------------------------------------------------------------
 void QuadTree::compressionPhi(unsigned phi){ // A FINIR
-
+	compressionPhi_rec(&_racine, phi);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -119,8 +123,10 @@ void QuadTree::destructeur(Noeud * ptr){
 		if(ptr->fils[i] != nullptr)
 			destructeur(ptr->fils[i]);
 
-	for(int j=0; j < 4; j++)
+	for(int j=0; j < 4; j++){
 		delete ptr->fils[j];
+		ptr->fils[j] = nullptr;	
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -167,11 +173,23 @@ void QuadTree::exporter_rec(const Noeud* ptr,  unsigned taille, ImagePNG & img, 
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::compressionSansPerte_rec(Noeud* ptr){
-
+void QuadTree::compressionSansPerte_rec(Noeud* ptr, unsigned taille){
+	if(taille > 2){
+		compressionSansPerte_rec(ptr->fils[0], taille/2);	
+		compressionSansPerte_rec(ptr->fils[1], taille/2);
+		compressionSansPerte_rec(ptr->fils[2], taille/2);		
+		compressionSansPerte_rec(ptr->fils[3], taille/2);
+	} else
+		if(ptr->rvb.R == ptr->fils[0]->rvb.R && ptr->rvb.V == ptr->fils[0]->rvb.V && ptr->rvb.B == ptr->fils[0]->rvb.B)
+			destructeur(ptr);
 }
 
 //------------------------------------------------------------------------------
 void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned delta){
+
+}
+
+//------------------------------------------------------------------------------
+void QuadTree::compressionPhi_rec(Noeud* ptr, unsigned phi){
 
 }
