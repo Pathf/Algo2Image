@@ -156,7 +156,7 @@ class QuadTree
          * 
          * @b Complexité À COMPLÉTER
         **/
-		void compressionDelta_rec(Noeud* ptr, unsigned delta);
+		void compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta);
 
 		/** --------------------------------------------------------------------
          * @brief Compression d'une avec un delta (Utilisation lors de la compressionDelta de l'image)

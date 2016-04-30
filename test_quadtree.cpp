@@ -12,7 +12,7 @@ int main()
 
     fichier = "i.png";
     originale.charger(fichier);
-
+/*
     cout << endl << "-------------------------------------------------" << endl;
     cout << "Original :" << endl;
     arbre.importer(originale);
@@ -26,7 +26,7 @@ int main()
     arbre.afficher();
     compressee = arbre.exporter();
     compressee.sauver("zip-d000-"+fichier);
-/*
+*/
     cout << endl << "-------------------------------------------------" << endl;
     cout << "Delta=128 :" << endl;
     arbre.importer(originale);
@@ -36,7 +36,7 @@ int main()
     compressee.sauver("zip-d128-"+fichier);
 
     cout << endl << "-------------------------------------------------" << endl;
-    cout << "Phi=4 :" << endl;
+/*    cout << "Phi=4 :" << endl;
     arbre.importer(originale);
     arbre.compressionPhi(4);
     arbre.afficher();

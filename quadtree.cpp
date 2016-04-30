@@ -71,7 +71,7 @@ void QuadTree::compressionDelta(unsigned delta){ // A FINIR
 	if(delta == 0)
 		compressionSansPerte_rec(&_racine, tailleI);
 	else
-		compressionDelta_rec(&_racine, delta);
+		compressionDelta_rec(&_racine, tailleI, delta);
 }
 
 //------------------------------------------------------------------------------
@@ -123,10 +123,8 @@ void QuadTree::destructeur(Noeud * ptr){
 		if(ptr->fils[i] != nullptr)
 			destructeur(ptr->fils[i]);
 
-	for(int j=0; j < 4; j++){
+	for(int j=0; j < 4; j++)
 		delete ptr->fils[j];
-		ptr->fils[j] = nullptr;	
-	}
 }
 
 //------------------------------------------------------------------------------
@@ -165,7 +163,6 @@ void QuadTree::exporter_rec(const Noeud* ptr,  unsigned taille, ImagePNG & img, 
 				for(unsigned j = 0; j < taille; j++)
 					img.ecrirePixel(x + i, y + j, ptr->rvb);
 	else {
-		cout << "yop\n";
 		exporter_rec(ptr->fils[0], taille/2, img, x, y);
 		exporter_rec(ptr->fils[1], taille/2, img, x, y + taille/2);
 		exporter_rec(ptr->fils[2], taille/2, img, x + taille/2, y);
@@ -180,14 +177,40 @@ void QuadTree::compressionSansPerte_rec(Noeud* ptr, unsigned taille){
 		compressionSansPerte_rec(ptr->fils[1], taille/2);
 		compressionSansPerte_rec(ptr->fils[2], taille/2);		
 		compressionSansPerte_rec(ptr->fils[3], taille/2);
-	} else
-		if(ptr->rvb.R == ptr->fils[0]->rvb.R && ptr->rvb.V == ptr->fils[0]->rvb.V && ptr->rvb.B == ptr->fils[0]->rvb.B)
-			destructeur(ptr);
+	}
+	
+	if(ptr->rvb.R == ptr->fils[0]->rvb.R && ptr->rvb.V == ptr->fils[0]->rvb.V && ptr->rvb.B == ptr->fils[0]->rvb.B)
+		destructeur(ptr);
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned delta){
+void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta){
+	if(taille > 2){
+		compressionDelta_rec(ptr->fils[0], taille/2, delta);	
+		compressionDelta_rec(ptr->fils[1], taille/2, delta);
+		compressionDelta_rec(ptr->fils[2], taille/2, delta);		
+		compressionDelta_rec(ptr->fils[3], taille/2, delta);
+	}
 
+	bool estFeuille = true;
+	for(int i=0; i<4; i++)
+		for(int j=0; j<4; j++)
+			if(ptr->fils[i]->fils[j] != nullptr)
+				estFeuille = false;
+
+	if(estFeuille){ //verifaction que tout les fils sont des feuilles	
+		unsigned maxLumFils = 0;
+		for(int i=0; i<4; i++)
+			if(diff_lum(ptr->fils[i]->rvb, ptr->rvb) > maxLumFils)
+				maxLumFils = diff_lum(ptr->fils[i]->rvb, ptr->rvb);
+
+		cout << maxLumFils << " : Lum / delta : " << delta << endl;
+		if(maxLumFils <= delta)
+			for(int j=0; j<4; j++){
+				destructeur(ptr->fils[j]);
+				ptr->fils[j] = nullptr; // si mi dans le destructeur sa ne marche pas 
+			}
+	}
 }
 
 //------------------------------------------------------------------------------
