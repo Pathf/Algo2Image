@@ -1,14 +1,14 @@
 all:
-	make CcQuad CcTest_q CoProg RProg
+	make CcQuad CcTestU CoProg RProg
 
 CcQuad:
 	g++ -std=c++11 quadtree.cpp -c -L.
 
-CcTest_q:
-	g++ -std=c++11 test_quadtree.cpp -c -L.
+CcTestU:
+	g++ -std=c++11 testUnitaires.cpp -c -L.
 
 CoProg:
-	g++ -std=c++11 test_quadtree.o quadtree.o -o prog -L. -llodepng
+	g++ -std=c++11 testUnitaires.o quadtree.o -o prog -L. -llodepng
 	
 RProg:
 	./prog
@@ -18,7 +18,7 @@ Sall:
 	make all SCc SProg SImg STild
 	
 SCc:
-	rm quadtree.o test_quadtree.o
+	rm quadtree.o testUnitaires.o
 	
 SProg:
 	rm prog

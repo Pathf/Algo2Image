@@ -50,4 +50,14 @@ int main()
     arbre.afficher();
     compressee = arbre.exporter();
     compressee.sauver("zip-p001-"+fichier);
+    
+        cout << endl << "-------------------------------------------------" << endl;
+    fichier = "pngs/16.png";
+    originale.charger(fichier);
+    cout << "Phi=7 :" << endl;
+    arbre.importer(originale);
+    arbre.compressionPhi(7);
+    arbre.afficher();
+    compressee = arbre.exporter();
+    compressee.sauver("zip-p001-"+fichier);
 }

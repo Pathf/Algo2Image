@@ -3,7 +3,9 @@
 #include <cassert>
 #include <cmath>
 #include "quadtree.hpp"
-#include <vector>
+#include <vector>		// std::vector
+#include <utility>		// std::pair
+#include <algorithm>    // std::sort
 
 using namespace std;
 
@@ -98,19 +100,39 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 	if(phi == 4)
 		for(auto f : _racine.fils)
 			destructeur(f);
-	/*else {
-	// Reconstitution de la taille d'un coté de l'image
-	unsigned tailleI = 1;
-	for(int i=0; i<_taille; i++)
-		tailleI *= 2;
-	// Reconstitution du nombre de feuille au total
-	unsigned nbfeuille = tailleI * tailleI;
+	
+	if(phi > 4){
+		// Reconstitution de la taille d'un coté de l'image
+		unsigned tailleI = 1;
+		for(int i=0; i<_taille; i++)
+			tailleI *= 2;
+		// Reconstitution du nombre de feuille au total
+		unsigned nbfeuille = tailleI * tailleI;
 
-	// Si le nombre de feuille est superieur à phi alors on utilise la methode récursive compressionPh_rec();
-	// sinon on ne fait rien car il est deja au norme demandé
-	if(nbfeuille > phi)
-		compressionPhi_rec(&_racine, phi, tailleI, nbfeuille);
-	}*/
+		vector<pair<unsigned, Noeud*>> vecStockTmp;
+		stockLumMax(&_racine, tailleI, vecStockTmp);
+
+		// sort: fonction de tri du vecteur en ordre décroissant, en utilisant une règle de comparaison
+		// des éléments pairs définie sur les différences de luminosité
+		std::sort(vecStockTmp.begin(), vecStockTmp.end(), [] (const pair<unsigned, Noeud*>& firstElem, const pair<unsigned, Noeud*>& secondElem) { return firstElem.first > secondElem.first; });
+
+		// Si le nombre de feuille est superieur à phi alors on utilise la methode récursive compressionPh_rec();
+		// sinon on ne fait rien car il est deja au norme demandé		
+		while(nbfeuille > phi){
+			for(auto f : vecStockTmp	.at(vecStockTmp.size() -1).second->fils)
+				destructeur(f);
+			vecStockTmp.pop_back();
+
+			nbfeuille -= 3;
+
+			if(vecStockTmp.size() == 0){
+				stockLumMax(&_racine, tailleI, vecStockTmp);
+				// sort: fonction de tri du vecteur en ordre décroissant, en utilisant une règle de comparaison
+				// des éléments pairs définie sur les différences de luminosité
+				std::sort(vecStockTmp.begin(), vecStockTmp.end(), [] (const pair<unsigned, Noeud*>& firstElem, const pair<unsigned, Noeud*>& secondElem) { return firstElem.first > secondElem.first; });
+			}
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -224,7 +246,7 @@ void QuadTree::compressionSansPerte_rec(Noeud* ptr, unsigned taille){
 void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta){
 	// appelle recursif : cas d'arret quand on obtient une portion de 4 pixel
 	if(taille > 2)
-		for(auto f : ptr->fils)		
+		for(auto f : ptr->fils)
 			compressionDelta_rec(f, taille/2, delta);
 
 	// Regarde si les fils du noeud sont des feuilles
@@ -247,23 +269,16 @@ void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta)
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::compressionPhi_rec(Noeud* ptr, unsigned phi, unsigned nbfeuille, unsigned taille){ // A FINIR
-/*	if(taille > 2){
-		compressionPhi_rec(ptr->fils[0], phi, nbfeuille, taille);
-	} //else {
-	vector<pair<unsigned, Noeud*>> vecStockTmp;
-	if(nbfeuille > phi){
-//		compressionPhi_rec();
-
+void QuadTree::stockLumMax(Noeud* ptr, unsigned taille, vector<pair<unsigned, Noeud*>> vecStock){
+	if(taille > 2)
+		for(auto f : ptr->fils)
+			stockLumMax(f, taille/2, vecStock);
+	else {	
 		// Pour la difference de luminence
 		unsigned maxLumFils = 0;
-		for(int i=0; i<4; i++)
-			if(diff_lum(ptr->fils[i]->rvb, ptr->rvb) > maxLumFils)
-				maxLumFils = diff_lum(ptr->fils[i]->rvb, ptr->rvb);
-		
+		for(auto f : ptr->fils)
+			if(diff_lum(f->rvb, ptr->rvb) > maxLumFils)
+				maxLumFils = diff_lum(f->rvb, ptr->rvb);
+		vecStock.push_back(make_pair(maxLumFils,ptr));
 	}
-*/}
-/*
-void QuadTree::stockLumMax(){
-
-}*/
+}

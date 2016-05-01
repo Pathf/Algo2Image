@@ -13,6 +13,7 @@
 #include <queue>
 #include <vector>
 #include "imagepng.hpp"
+#include <utility>
 
 /**
  * @brief Classe QuadTree qui représente une image bitmap sous forme arborescente
@@ -176,6 +177,15 @@ class QuadTree
          * 
          * @b Complexité θ( nombre de Noeud + Taille du tableau )
         **/
-		void compressionPhi_rec(Noeud* ptr, unsigned phi, unsigned nbfeuille, unsigned taille);
+		//void compressionPhi_rec(Noeud* ptr, unsigned phi, unsigned nbfeuille, unsigned taille, std::vector<std::pair<unsigned, Noeud*>> vecStock);
+		
+		/** --------------------------------------------------------------------
+         * @brief Stock des pointeurs et des Luminences dans plusieurs Pairs qui seront stocké dans un vetor  (Utilisation lors de la compressionPhi_rec de l'image)
+         * @param ptr est le pointeur permettant de se mouvoir dans l'arbre, taille est la largeur de l'image et vecStock est le vecteur des Pair à stocké
+         * @pre ptr n'est pas egal à nullptr
+         * 
+         * @b Complexité θ( nombre de Noeud )
+        **/
+		void stockLumMax(Noeud* ptr, unsigned taille, std::vector<std::pair<unsigned, Noeud*>> vecStock);
 };
 #endif
