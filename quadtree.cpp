@@ -15,7 +15,7 @@ using namespace std;
 
 //------------------------------------------------------------------------------
 QuadTree::QuadTree(){
-	// Initialise toute les pointeurs du noeud à nullptr et la taille à 0
+	// Initialise tous les pointeurs du noeud à nullptr et la taille à 0
 	_taille = 0;
 	_racine.pere = nullptr;
 	for(auto f : _racine.fils)
@@ -48,7 +48,7 @@ void QuadTree::importer(const ImagePNG & img){ // A VERIFIER PAR RAPPORT A UN AR
 		_taille++;
 	}
 
-	// Appelle de la methode récursive importer_rec(); pour créer tous l'arbre à partir d'une image
+	// Appel de la methode récursive importer_rec(); pour créer tout l'arbre à partir d'une image
 	importer_rec(&_racine, img.largeur(), img, 0, 0);
 }
 
@@ -65,13 +65,13 @@ ImagePNG QuadTree::exporter() const{
 	// Utilisation de la méthode récursive exporter_rec(); pour créer dans sa totalité l'image
 	exporter_rec(&_racine, coteImage, img, 0, 0);
 
-	// Et on retourne cette image créé
+	// Et on retourne cette image créée
     return img;
 }
 
 //------------------------------------------------------------------------------
 void QuadTree::compressionDelta(unsigned delta){
-	// Verifie que le delta est correcte (une couleur ne peut pas etre superieur à 255)
+	// Verifie que le delta est correct (une couleur ne peut pas etre superieure à 255)
 	assert(delta < 255);
 
 	// Reconstitution de la taille d'un coté de l'image
@@ -79,7 +79,7 @@ void QuadTree::compressionDelta(unsigned delta){
 	for(int i = 0; i < _taille; i++)
 		tailleI *= 2;
 
-	// Si delta est égal à 0 alors simple appel de la méthode récursive compressionSansPerte_rec(); qui evite des calcules inutile
+	// Si delta est égal à 0 alors simple appel de la méthode récursive compressionSansPerte_rec(); qui evite des calculs inutiles
 	// Sinon appel de la methode récursive compressionDelta_rec();
 	if(delta == 0)
 		compressionSansPerte_rec(&_racine, tailleI);
@@ -89,7 +89,7 @@ void QuadTree::compressionDelta(unsigned delta){
 
 //------------------------------------------------------------------------------
 void QuadTree::compressionPhi(unsigned phi){ // A FINIR
-	// Vérification car suprimmer la racine n'a pas de sens
+	// Vérification car supprimer la racine n'a pas de sens
 	assert(phi > 0);
 
 	if(phi == 1)
@@ -147,7 +147,7 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 
 //------------------------------------------------------------------------------
 void QuadTree::destructeur(Noeud * ptr){
-	// On fait un appelle jusqu'a tombe sur les feuilles
+	// On fait un appel jusqu'à tomber sur les feuilles
 	for(auto f : ptr->fils)
 		if(f) // != nullptr
 			destructeur(f);
@@ -161,7 +161,7 @@ void QuadTree::destructeur(Noeud * ptr){
 
 //------------------------------------------------------------------------------
 void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y){
-	// Creation des Noeud au fur et a mesure des appelle
+	// Creation des Noeud au fur et a mesure des appels
 	for(int i = 0; i < 4; i++){
 		ptr->fils[i] = new Noeud;
 		ptr->fils[i]->pere = ptr;
@@ -169,8 +169,8 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, 
 			ptr->fils[i]->fils[j] = nullptr;
 	}
 
-	// On fait des appelle tant que l'arbre comporte des portions superieur a 4 pixels
-	// (2 etant la largeur d'un des cote de l'image donc 2*2 = 4)
+	// On fait des appels tant que l'arbre comporte des portions superieures a 4 pixels
+	// (2 etant la largeur d'un des cotes de l'image donc 2*2 = 4)
 	if(taille > 2){
 		importer_rec(ptr->fils[0], taille/2, img, x, y);	
 		importer_rec(ptr->fils[1], taille/2, img, x, y + (taille/2));
@@ -195,7 +195,7 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, 
 //------------------------------------------------------------------------------
 void QuadTree::exporter_rec(const Noeud* ptr,  unsigned taille, ImagePNG & img, unsigned x, unsigned y) const {
 	// Si le pointeur vise une feuille alors on ecrit les pixels correspondant
-	// Sinon on réappel la methode récursive exporter_rec(); jusqu'a ce qu'on obtienne une feuille
+	// Sinon on réappelle la methode récursive exporter_rec(); jusqu'a ce qu'on obtienne une feuille
 	if(ptr->fils[0] == nullptr)
 			for(unsigned i = 0; i < taille ; i++)
 				for(unsigned j = 0; j < taille; j++)
@@ -210,19 +210,19 @@ void QuadTree::exporter_rec(const Noeud* ptr,  unsigned taille, ImagePNG & img, 
 
 //------------------------------------------------------------------------------
 void QuadTree::compressionSansPerte_rec(Noeud* ptr, unsigned taille){
-	// appelle recursif : cas d'arret quand on obtient une portion de 4 pixel
+	// appel recursif : cas d'arret quand on obtient une portion de 4 pixel
 	if(taille > 2)
 		for(auto f : ptr->fils)
 			compressionSansPerte_rec(f, taille/2);	
 
-	// verifie si la couleur est pareil dans le noeud et dans un des fils si oui alors suprime les fils
+	// verifie si la couleur est identique dans le noeud et dans un des fils si oui alors supprime les fils
 	if(ptr->rvb.R == ptr->fils[0]->rvb.R && ptr->rvb.V == ptr->fils[0]->rvb.V && ptr->rvb.B == ptr->fils[0]->rvb.B)
 		destructeur(ptr);
 }
 
 //------------------------------------------------------------------------------
 void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta){
-	// appelle recursif : cas d'arret quand on obtient une portion de 4 pixel
+	// appel recursif : cas d'arret quand on obtient une portion de 4 pixel
 	if(taille > 2)
 		for(auto f : ptr->fils)		
 			compressionDelta_rec(f, taille/2, delta);
