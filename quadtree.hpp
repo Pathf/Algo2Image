@@ -118,8 +118,8 @@ class QuadTree
 
         // Fonction statique réalisant l'affichage récursivement depuis le noeud *n
         /** --------------------------------------------------------------------
-         * @brief Suppression du QuadTree (Utilisation lors de l'appelle du destructeur)
-         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre
+         * @brief Fonction statique réalisant l'affichage récursivement depuis le noeud *n
+         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, texte à renvoyer
          * 
          * @b Complexité θ( nombre de Noeud )
         **/
@@ -127,7 +127,7 @@ class QuadTree
 
         // Ajout personnel :
         /** --------------------------------------------------------------------
-         * @brief Suppression du QuadTree (Utilisation lors de l'appelle du destructeur)
+         * @brief Suppression du QuadTree (Utilisation lors de l'appel du destructeur)
          * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre
          * 
          * @b Complexité θ( nombre de Noeud )
@@ -136,7 +136,7 @@ class QuadTree
 
         /** --------------------------------------------------------------------
          * @brief Creation du QuadTree (Utilisation lors de l'importation de l'image)
-         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la largeur de l'image, image est l'image qui est importé, x et y sont les positions pour placer les pixels au bon endroit dans l'arbre.
+         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la largeur de l'image, image est l'image qui est importée, x et y sont les positions pour placer les pixels au bon endroit dans l'arbre.
          * @pre image format 2^n * 2^n
          * 
          * @b Complexité θ( nombre de Noeud )
@@ -172,7 +172,7 @@ class QuadTree
 
 		/** --------------------------------------------------------------------
          * @brief Compression d'une image avec un phi (Utilisation lors de la compressionPhi de l'image)
-         * @param ptr est le pointeur permettant de se mouvoir dans l'arbre, taille est la largeur de l'image
+         * @param ptr est le pointeur permettant de se mouvoir dans l'arbre, phi est le nombre maximal de feuilles autorisées, nbfeuille le nombre de feuille avant compression, taille est la largeur de l'image
          * @pre phi > 0
          * 
          * @b Complexité θ( nombre de Noeud + Taille du tableau )
