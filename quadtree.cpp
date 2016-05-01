@@ -18,8 +18,8 @@ QuadTree::QuadTree(){
 	// Initialise toute les pointeurs du noeud à nullptr et la taille à 0
 	_taille = 0;
 	_racine.pere = nullptr;
-	for(int i=0; i < 4; i++)
-		_racine.fils[i] = nullptr;
+	for(auto f : _racine.fils)
+		f = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -92,6 +92,13 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 	// Vérification car suprimmer la racine n'a pas de sens
 	assert(phi > 0);
 
+/*	if(phi == 1)
+		destructeur(&_racine);
+*/
+	if(phi == 4)
+		for(auto f : _racine.fils)
+			destructeur(f);
+	/*else {
 	// Reconstitution de la taille d'un coté de l'image
 	unsigned tailleI = 1;
 	for(int i=0; i<_taille; i++)
@@ -103,6 +110,7 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 	// sinon on ne fait rien car il est deja au norme demandé
 	if(nbfeuille > phi)
 		compressionPhi_rec(&_racine, phi, tailleI, nbfeuille);
+	}*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,13 +148,15 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 //------------------------------------------------------------------------------
 void QuadTree::destructeur(Noeud * ptr){
 	// On fait un appelle jusqu'a tombe sur les feuilles
-	for(int i=0; i < 4; i++)
-		if(ptr->fils[i] != nullptr)
-			destructeur(ptr->fils[i]);
+	for(auto f : ptr->fils)
+		if(f) // != nullptr
+			destructeur(f);
 
 	// On supprime les fils au fur et à mesure
-	for(int j=0; j < 4; j++)
+	for(int j=0; j < 4; j++){
 		delete ptr->fils[j];
+		ptr->fils[j] = nullptr;
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -176,8 +186,8 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, 
 
 	// On fait la moyenne de la couleur pour tout les Noeuds qui ne sont pas feuille
 	vector<Couleur> vectTmp;
-	for(int i = 0; i < 4; i++)
-		vectTmp.push_back(ptr->fils[i]->rvb);
+	for(auto f : ptr->fils)
+		vectTmp.push_back(f->rvb);
 
 	ptr->rvb = moyenne(vectTmp);
 }
@@ -219,23 +229,20 @@ void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta)
 
 	// Regarde si les fils du noeud sont des feuilles
 	bool estFeuille = true;
-	for(int i=0; i<4; i++)
-		for(int j=0; j<4; j++)
-			if(ptr->fils[i]->fils[j] != nullptr)
+	for(auto f : ptr->fils)
+		for(auto f2 : f->fils)
+			if(f2) //  != nullptr
 				estFeuille = false;
 
 	// Permet de ne faire que les cas ou les fils sont des feuilles
 	if(estFeuille){
 		unsigned maxLumFils = 0;
-		for(int i=0; i<4; i++)
-			if(diff_lum(ptr->fils[i]->rvb, ptr->rvb) > maxLumFils)
-				maxLumFils = diff_lum(ptr->fils[i]->rvb, ptr->rvb);
+		for(auto f : ptr->fils)
+			if(diff_lum(f->rvb, ptr->rvb) > maxLumFils)
+				maxLumFils = diff_lum(f->rvb, ptr->rvb);
 
 		if(maxLumFils <= delta)
-			for(int j=0; j<4; j++){
-				destructeur(ptr->fils[j]);
-				ptr->fils[j] = nullptr; // si mi dans le destructeur sa ne marche pas 
-			}
+			destructeur(ptr);
 	}
 }
 
