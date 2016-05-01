@@ -60,7 +60,7 @@ Enfin la liste de toutes les méthodes employées est explicitée ci-après.
     
     \subsection{Encombrement mémoire}
     
-    PLACEHOLDER
+    Initialement l'encombrement mémoire est maximum. En effet lors de l'importation d'une image il existe autant de feuilles que de pixels plus les nombreux pointeurs des différents nœuds. Une fois l'importation terminée l'encombrement ne varie plus sauf si une opération de compression est lancée sur le \qt. Auquel cas l'encombrement va augmenter un cours instant (le temps de faire le premier calcul de moyenne et de la conservation de celle-ci) puis ne fera que baisser.
     
     \subsection{Complexités temporelles}
 
@@ -83,13 +83,14 @@ Enfin la liste de toutes les méthodes employées est explicitée ci-après.
         		\info{exporter()}                               &  A DETERMINER (n ?)                   \\ \hline
         		\info{compressionDelta()}                                &  A DETERMINER (n ?)                   \\ \hline
         		\info{compressionPhi()}                                 &  A DETERMINER (n ?)                   \\ \hline
-        		\info{kiemeBit()}                                 &  A DETERMINER (n ?)                   \\ \hline
-        		\info{destructeur())}                                 &  A DETERMINER (n ?)                   \\ \hline
-        		\info{importer_rec()}                                 &  A DETERMINER (n ?)                   \\ \hline
-        		\info{exporter_rec()}                                 &  A DETERMINER (n ?)                   \\ \hline
-        		\info{compressionSansPerte_rec()}                                 &  A DETERMINER (n ?)                   \\ \hline
-        		\info{compressionDelta_rec()}                                 &  A DETERMINER (n ?)                   \\ \hline
-        		\info{compressionPhi_rec()}                                 &  A DETERMINER (n ?)                   \\ \hline
+        		\info{kiemeBit()}                                 &  $\Theta(1)$                   \\ \hline
+        		\info{afficher_rec()}                                 &  $\Theta(nb de Noeud)$                   \\ \hline
+        		\info{destructeur()}                                 &  $\Theta(nb de Noeud)$                   \\ \hline
+        		\info{importer_rec()}                                 &  $\Theta(nb de Noeud)$                   \\ \hline
+        		\info{exporter_rec()}                                 &  $\Theta(nb de Noeud)$                   \\ \hline
+        		\info{compressionSansPerte_rec()}                                 &  $\Theta(nb de Noeud)$                   \\ \hline
+        		\info{compressionDelta_rec()}                                 &  $\Theta(nb de Noeud)$                   \\ \hline
+        		\info{compressionPhi_rec()}                                 &  $\Theta(nb de Noeud + taille)$                   \\ \hline
         	\end{tabular}
         	\caption{Complexités Temporelles Théoriques des opérations sur les \qt}
         \end{table}
