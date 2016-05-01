@@ -42,4 +42,12 @@ int main()
     arbre.afficher();
     compressee = arbre.exporter();
     compressee.sauver("zip-p004-"+fichier);
+    
+    cout << endl << "-------------------------------------------------" << endl;
+    cout << "Phi=1 :" << endl;
+    arbre.importer(originale);
+    arbre.compressionPhi(1);
+    arbre.afficher();
+    compressee = arbre.exporter();
+    compressee.sauver("zip-p001-"+fichier);
 }
