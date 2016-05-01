@@ -92,9 +92,9 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 	// Vérification car suprimmer la racine n'a pas de sens
 	assert(phi > 0);
 
-/*	if(phi == 1)
+	if(phi == 1)
 		destructeur(&_racine);
-*/
+		
 	if(phi == 4)
 		for(auto f : _racine.fils)
 			destructeur(f);

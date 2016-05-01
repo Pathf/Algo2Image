@@ -15,7 +15,7 @@ RProg:
 
 # Suppression du prog, des .o et des images
 Sall:
-	make SCc SProg SImg STild
+	make all SCc SProg SImg STild
 	
 SCc:
 	rm quadtree.o test_quadtree.o
@@ -24,7 +24,7 @@ SProg:
 	rm prog
 
 SImg:
-	rm zip-d000-i.png zip-d128-i.png zip-p004-i.png
+	rm zip-d000-i.png zip-d128-i.png zip-p004-i.png zip-p001-i.png
 
 STild:
 	sh SuppFauxFich.sh
