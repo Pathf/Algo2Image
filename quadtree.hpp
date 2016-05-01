@@ -165,6 +165,6 @@ class QuadTree
          * 
          * @b Complexité À COMPLÉTER
         **/
-		void compressionPhi_rec(Noeud* ptr, unsigned phi);
+		void compressionPhi_rec(Noeud* ptr, unsigned phi, unsigned nbfeuille, unsigned taille);
 };
 #endif

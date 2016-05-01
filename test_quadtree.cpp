@@ -35,8 +35,8 @@ int main()
     compressee = arbre.exporter();
     compressee.sauver("zip-d128-"+fichier);
 
-    cout << endl << "-------------------------------------------------" << endl;
-/*    cout << "Phi=4 :" << endl;
+ /*   cout << endl << "-------------------------------------------------" << endl;
+    cout << "Phi=4 :" << endl;
     arbre.importer(originale);
     arbre.compressionPhi(4);
     arbre.afficher();

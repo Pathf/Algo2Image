@@ -62,7 +62,7 @@ ImagePNG QuadTree::exporter() const{
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::compressionDelta(unsigned delta){ // A FINIR
+void QuadTree::compressionDelta(unsigned delta){
 	assert(delta < 255);
 	unsigned tailleI = 1;
 	for(int i = 0; i < _taille; i++)
@@ -76,7 +76,15 @@ void QuadTree::compressionDelta(unsigned delta){ // A FINIR
 
 //------------------------------------------------------------------------------
 void QuadTree::compressionPhi(unsigned phi){ // A FINIR
-	compressionPhi_rec(&_racine, phi);
+	assert(phi > 0);
+
+	unsigned tailleI = 1;
+	for(int i=0; i<_taille; i++)
+		tailleI *= 2;
+	unsigned nbfeuille = tailleI * tailleI; // nombre de feuille total
+
+	if(nbfeuille > phi)
+		compressionPhi_rec(&_racine, phi, tailleI, nbfeuille);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -119,16 +127,19 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 
 //------------------------------------------------------------------------------
 void QuadTree::destructeur(Noeud * ptr){
+	// On fait un appelle jusqu'a tombe sur les feuilles
 	for(int i=0; i < 4; i++)
 		if(ptr->fils[i] != nullptr)
 			destructeur(ptr->fils[i]);
 
+	// On supprime les fils au fur et à mesure
 	for(int j=0; j < 4; j++)
 		delete ptr->fils[j];
 }
 
 //------------------------------------------------------------------------------
 void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y){
+	// Creation des Noeud au fur et a mesure des appelle
 	for(int i = 0; i < 4; i++){
 		ptr->fils[i] = new Noeud;
 		ptr->fils[i]->pere = ptr;
@@ -136,23 +147,26 @@ void QuadTree::importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, 
 			ptr->fils[i]->fils[j] = nullptr;
 	}
 
+	// On fait des appelle tant que l'arbre comporte des portions superieur a 4 pixels
+	// (2 etant la largeur d'un des cote de l'image donc 2*2 = 4)
 	if(taille > 2){
 		importer_rec(ptr->fils[0], taille/2, img, x, y);	
 		importer_rec(ptr->fils[1], taille/2, img, x, y + (taille/2));
 		importer_rec(ptr->fils[2], taille/2, img, x + (taille/2), y);		
 		importer_rec(ptr->fils[3], taille/2, img, x + (taille/2), y + (taille/2));
 	} else {
+		// Sinon on ecrit lit la couleur pour la feuille au pixel correspondant
 		ptr->fils[0]->rvb = img.lirePixel(x,y);
 		ptr->fils[1]->rvb = img.lirePixel(x,y+1);
 		ptr->fils[2]->rvb = img.lirePixel(x+1,y);
 		ptr->fils[3]->rvb = img.lirePixel(x+1,y+1);
 	}
 
+	// On fait la moyenne de la couleur pour tout les Noeuds qui ne sont pas feuille
 	vector<Couleur> vectTmp;
 	for(int i = 0; i < 4; i++)
 		vectTmp.push_back(ptr->fils[i]->rvb);
 
-	// Pour la valeur du pere (moyenne des fils)
 	ptr->rvb = moyenne(vectTmp);
 }
 
@@ -172,39 +186,37 @@ void QuadTree::exporter_rec(const Noeud* ptr,  unsigned taille, ImagePNG & img, 
 
 //------------------------------------------------------------------------------
 void QuadTree::compressionSansPerte_rec(Noeud* ptr, unsigned taille){
-	if(taille > 2){
-		compressionSansPerte_rec(ptr->fils[0], taille/2);	
-		compressionSansPerte_rec(ptr->fils[1], taille/2);
-		compressionSansPerte_rec(ptr->fils[2], taille/2);		
-		compressionSansPerte_rec(ptr->fils[3], taille/2);
-	}
-	
+	// appelle recursif : cas d'arret quand on obtient une portion de 4 pixel
+	if(taille > 2)
+		for(auto f : ptr->fils)
+			compressionSansPerte_rec(f, taille/2);	
+
+	// verifie si la couleur est pareil dans le noeud et dans un des fils si oui alors suprime les fils
 	if(ptr->rvb.R == ptr->fils[0]->rvb.R && ptr->rvb.V == ptr->fils[0]->rvb.V && ptr->rvb.B == ptr->fils[0]->rvb.B)
 		destructeur(ptr);
 }
 
 //------------------------------------------------------------------------------
 void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta){
-	if(taille > 2){
-		compressionDelta_rec(ptr->fils[0], taille/2, delta);	
-		compressionDelta_rec(ptr->fils[1], taille/2, delta);
-		compressionDelta_rec(ptr->fils[2], taille/2, delta);		
-		compressionDelta_rec(ptr->fils[3], taille/2, delta);
-	}
+	// appelle recursif : cas d'arret quand on obtient une portion de 4 pixel
+	if(taille > 2)
+		for(auto f : ptr->fils)		
+			compressionDelta_rec(f, taille/2, delta);
 
+	// Regarde si les fils du noeud sont des feuilles
 	bool estFeuille = true;
 	for(int i=0; i<4; i++)
 		for(int j=0; j<4; j++)
 			if(ptr->fils[i]->fils[j] != nullptr)
 				estFeuille = false;
 
-	if(estFeuille){ //verifaction que tout les fils sont des feuilles	
+	// Permet de ne faire que les cas ou les fils sont des feuilles
+	if(estFeuille){
 		unsigned maxLumFils = 0;
 		for(int i=0; i<4; i++)
 			if(diff_lum(ptr->fils[i]->rvb, ptr->rvb) > maxLumFils)
 				maxLumFils = diff_lum(ptr->fils[i]->rvb, ptr->rvb);
 
-		cout << maxLumFils << " : Lum / delta : " << delta << endl;
 		if(maxLumFils <= delta)
 			for(int j=0; j<4; j++){
 				destructeur(ptr->fils[j]);
@@ -214,6 +226,23 @@ void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta)
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::compressionPhi_rec(Noeud* ptr, unsigned phi){
+void QuadTree::compressionPhi_rec(Noeud* ptr, unsigned phi, unsigned nbfeuille, unsigned taille){ // A FINIR
+/*	if(taille > 2){
+		compressionPhi_rec(ptr->fils[0], phi, nbfeuille, taille);
+	} //else {
+	vector<pair<unsigned, Noeud*>> vecStockTmp;
+	if(nbfeuille > phi){
+//		compressionPhi_rec();
 
-}
+		// Pour la difference de luminence
+		unsigned maxLumFils = 0;
+		for(int i=0; i<4; i++)
+			if(diff_lum(ptr->fils[i]->rvb, ptr->rvb) > maxLumFils)
+				maxLumFils = diff_lum(ptr->fils[i]->rvb, ptr->rvb);
+		
+	}
+*/}
+/*
+void QuadTree::stockLumMax(){
+
+}*/
