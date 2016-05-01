@@ -5,4 +5,19 @@ J'utiliserai aussi ce fichier pour te transmettre mes éventuelles questions, je
 
 ##A supprimer avant de rendre le projet
 
-
+###Notes de travail (HB) :
+Listes des méthodes :
+- QuadTree()
+- ~QuadTree()
+- afficher()
+- importer()
+- exporter()
+- compressionDelta()
+- compressionPhi()
+- kiemeBit()
+- destructeur()
+- importer_rec()
+- exporter_rec()
+- compressionSansPerte_rec()
+- compressionDelta_rec()
+- compressionPhi_rec()
