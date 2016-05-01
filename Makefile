@@ -24,7 +24,7 @@ SProg:
 	rm prog
 
 SImg:
-	rm zip-d000-i.png zip-d128-i.png zip-p004-i.png zip-p001-i.png
+	rm zip-d-128-gnu.png zip-d-512-books.png zip-d-2048-earth.png
 
 STild:
 	sh SuppFauxFich.sh

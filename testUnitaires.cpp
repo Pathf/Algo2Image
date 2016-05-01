@@ -15,8 +15,8 @@ int main(){
 	cout << "######################################################\n" << endl;
 
 	do{
-		cout << "Donner le nom de votre image :" << endl;
-		cout << "2.png  /  4.png  /  8.png  /  16.png  /  32-tux.png  /  64-tuxette.png  /  128-gnu.png  /  256-tux.png\n" << endl;
+		cout << "Donner le nom de votre image : (le programme la cherchera dans pngs tout seul rentrer simplement le nom)" << endl;
+		cout << "2.png  /  4.png  /  8.png  /  16.png  /  32-tux.png  /  64-tuxette.png  /  128-gnu.png  /  256-tux.png" << endl;
 		cout << "256-trash.png  /  512-books.png  /  1024-cube.png  /  2048-earth.png  /  4096-palette.png  / 8192-snowflake.png" << endl;
 		cin >> fichier;
 		nomF = fichier;
@@ -30,7 +30,7 @@ int main(){
 	    cout << "  3 - Compression delta" << endl;
 	    cout << "  4 - Compression phi" << endl;
     
-	    cout << "\nRentrez l'option que vous voulez affectez à votre image :  ";
+	    cout << "\nRentrez l'option que vous voulez affectez à votre image : ";
 	    cin >> choix;
 	
 	    arbre.importer(originale);    
@@ -48,17 +48,17 @@ int main(){
 	    	
 	    	case 3:
 	    		cout << "------------------------------------------------------" << endl;
-	    		cout << "Choississez votre delta (delta < 255)" << endl;
+	    		cout << "Choississez votre delta (delta < 255) : ";
 				cin >> delta;
 	    		arbre.compressionDelta(delta);
 	    		arbre.afficher();
 	    		compressee = arbre.exporter();
-    			compressee.sauver("zip-d-" + nomF);
+    			compressee.sauver("zip-d200-" + nomF);
 	    	break;
 
     		case 4:
     			cout << "------------------------------------------------------" << endl;
-    			cout << "Choississez votre phi (phi > 0)" << endl;
+    			cout << "Choississez votre phi (phi > 0) : ";
     			cin >> phi;
     			arbre.compressionPhi(phi);
 			    arbre.afficher();
