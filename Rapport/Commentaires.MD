@@ -50,7 +50,7 @@ Listes des méthodes :
 
 # Pas encore ecrit :
 - destructeur() :
-	Complexité :
+	Complexité : θ()
 	Implementation :
 	Commentaire suplementaire (difficulté rencontré) :
 
