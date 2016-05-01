@@ -133,7 +133,7 @@ class QuadTree
 		
 		/** --------------------------------------------------------------------
          * @brief Creation d'une image grace au QuadTree (Utilisation lors de l'exportation de l'image)
-         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la taille de l'arbre -1, tabCpt est tableau contenant les zonnes par raport à la position dans l'arbre (position 0 = racine de l'arbre, position 1 un des fils de la racine, ... etc) et image est l'image qui est importé.
+         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la largeur de l'image, tabCpt est tableau contenant les zonnes par raport à la position dans l'arbre (position 0 = racine de l'arbre, position 1 un des fils de la racine, ... etc) et image est l'image qui est importé.
          * @pre image format 2^n * 2^n
          * 
          * @b Complexité À COMPLÉTER
@@ -150,18 +150,18 @@ class QuadTree
 		void compressionSansPerte_rec(Noeud* ptr, unsigned taille);
 
 		/** --------------------------------------------------------------------
-         * @brief Compression d'une avec un delta (Utilisation lors de la compressionDelta de l'image)
-         * @param 
-         * @pre 
+         * @brief Compression d'une image avec un delta (Utilisation lors de la compressionDelta de l'image)
+         * @param ptr est le pointeur permettant de se mouvoir dans l'arbre, taille est la largeur de l'image et delta est le chiffre correspondant à la compression demandé
+         * @pre delta < 255
          * 
          * @b Complexité À COMPLÉTER
         **/
 		void compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta);
 
 		/** --------------------------------------------------------------------
-         * @brief Compression d'une avec un delta (Utilisation lors de la compressionDelta de l'image)
-         * @param 
-         * @pre 
+         * @brief Compression d'une image avec un phi (Utilisation lors de la compressionPhi de l'image)
+         * @param ptr est le pointeur permettant de se mouvoir dans l'arbre, taille est la largeur de l'image
+         * @pre phi > 0
          * 
          * @b Complexité À COMPLÉTER
         **/
