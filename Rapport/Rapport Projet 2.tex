@@ -28,7 +28,8 @@ Ce rapport expliquera donc comment ces algorithmes ont été mis en place ainsi 
 
 \section{Implémentation}
 
-PLACEHOLDER
+Afin de répondre aux exigences du sujet plusieurs décisions concernant l'implémentation ont été prises. Tout d'abord comme demandé l'encodage des images se fait initialement par l'intermédiaire de la structure ImagePNG puis le stockage se fait dans la structure arbre d'arité 4 \qt telle que présentée dans le sujet et donnée dans la bibliothèque fournie. C'est dans cette structure que les éventuelles opérations de compression (sans-perte, delta ou phi) sont effectuées. Il a aussi été décidé que pour les méthodes nécessitant de travailler sur l'arbre une approche récursive serait la plus appropriée et donc les méthodes publiques font souvent appel à des méthodes privées dont le fonctionnement est récursif. Le but de cette pseudo-duplication des méthodes était de ne pas changer les méthodes publiques par rapport à celles données de base à l'exercice tout en ayant la possibilité de faire ce fonctionnement récursif qui nécessitait des paramètres supplémentaires.\\
+Enfin la liste de toutes les méthodes employées est explicitée ci-après.
 
     \subsection{Méthodes employées}
 
@@ -55,7 +56,6 @@ PLACEHOLDER
 	    	\item \info{compressionSansPerte_rec(Noeud* ptr, unsigned taille)} : Algorithme de compression récursif d'une image sans perte (dans le cas d'une compression Delta avec delta=0). Le paramètre ptr est le pointeur vers le Noeud duquel on effectue les éventuelles opérations de compression sur ses feuilles, taille est simplement la largeur de l'image.
 	    	\item \info{compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta)} : Algorithme de compression récursif d'une image avec perte basée sur la différence de luminance des pixels voisins. Le paramètre ptr est le pointeur vers le Noeud duquel on effectue les éventuelles opérations de compression sur ses feuilles, taille est simplement la largeur de l'image et delta est la différence de luminance requise.
 	    	\item \info{compressionPhi_rec(Noeud* ptr, unsigned phi)} : Algorithme de compression récursif d'une image avec perte, la compression se faisant afin d'atteindre un certain nombre maximum de feuilles dans le \qt. Le paramètre ptr est le pointeur vers le Noeud duquel on effectue les éventuelles opérations de compression sur ses feuilles, phi est le nombre maximum de feuilles autorisées dans l'arbre.
-	    	
 	    \end{itemize}
     
     \subsection{Encombrement mémoire}
