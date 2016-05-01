@@ -120,7 +120,7 @@ class QuadTree
          * @brief Suppression du QuadTree (Utilisation lors de l'appelle du destructeur)
          * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre
          * 
-         * @b Complexité θ( ??? )
+         * @b Complexité θ( nombre de Noeud )
         **/
         static void afficher_rec(const Noeud * n, std::string tabs="");
 
@@ -129,7 +129,7 @@ class QuadTree
          * @brief Suppression du QuadTree (Utilisation lors de l'appelle du destructeur)
          * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre
          * 
-         * @b Complexité θ( ??? )
+         * @b Complexité θ( nombre de Noeud )
         **/
 		void destructeur(Noeud * ptr);
 
@@ -138,7 +138,7 @@ class QuadTree
          * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la largeur de l'image, image est l'image qui est importé, x et y sont les positions pour placer les pixels au bon endroit dans l'arbre.
          * @pre image format 2^n * 2^n
          * 
-         * @b Complexité θ( ??? )
+         * @b Complexité θ( nombre de Noeud )
         **/
 		void importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y);
 		
@@ -147,7 +147,7 @@ class QuadTree
          * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la largeur de l'image, tabCpt est tableau contenant les zonnes par raport à la position dans l'arbre (position 0 = racine de l'arbre, position 1 un des fils de la racine, ... etc) et image est l'image qui est importé.
          * @pre image format 2^n * 2^n
          * 
-         * @b Complexité θ( ??? )
+         * @b Complexité θ( nombre de Noeud )
         **/
 		void exporter_rec(const Noeud* ptr, unsigned taille, ImagePNG & img, unsigned x, unsigned y) const;
 
@@ -156,7 +156,7 @@ class QuadTree
          * @param ptr est le pointeur permettant de se mouvoir dans l'arbre
          * @pre delta == 0
          * 
-         * @b Complexité θ( ??? )
+         * @b Complexité θ( nombre de Noeud )
         **/
 		void compressionSansPerte_rec(Noeud* ptr, unsigned taille);
 
@@ -165,7 +165,7 @@ class QuadTree
          * @param ptr est le pointeur permettant de se mouvoir dans l'arbre, taille est la largeur de l'image et delta est le chiffre correspondant à la compression demandé
          * @pre delta < 255
          * 
-         * @b Complexité θ( ??? )
+         * @b Complexité θ( nombre de Noeud )
         **/
 		void compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta);
 
@@ -174,7 +174,7 @@ class QuadTree
          * @param ptr est le pointeur permettant de se mouvoir dans l'arbre, taille est la largeur de l'image
          * @pre phi > 0
          * 
-         * @b Complexité θ( ??? )
+         * @b Complexité θ( nombre de Noeud + Taille du tableau )
         **/
 		void compressionPhi_rec(Noeud* ptr, unsigned phi, unsigned nbfeuille, unsigned taille);
 };
