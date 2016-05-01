@@ -9,7 +9,7 @@
 \usepackage{float}
 
 \newcommand{\info}{\texttt}
-\newcommand{\qt}{\info{quatree}}
+\newcommand{\qt}{\info{QuadTree}}
 
 \title{Algorithmique et Structure de Données 2\\
 Rapport Projet 2}
@@ -32,7 +32,31 @@ PLACEHOLDER
 
     \subsection{Méthodes employées}
 
-    PLACEHOLDER
+		\subsubsection{Méthodes publiques}
+		
+		\begin{itemize}
+	    	\item \info{QuadTree()} : Constructeur initialisant un arbre d'arité 4 vide.
+	    	\item \info{~QuadTree()} : Destructeur faisant appel à la méthode \info{destructeur()} sur la racine du \qt.
+	    	\item \info{afficher()} : Méthode d'affichage textuel du contenu d'un \qt, appelle la méthode \info{afficher_rec()} sur la racine dans le cas d'un arbre non vide. Présente à des fins de debugging.
+	    	\item \info{importer(const ImagePNG & img)} : Encode l'image Bitmap img (au format ImagePNG) dans le \qt. Emploie la méthode \info{importer_rec()}. L'image doit être de dimension $2\up{n}\times2\up{n}$ avec $n>0$.
+	    	\item \info{exporter()} : Méthode exportant le contenu du \qt dans une image sous le format ImagePNG. Fait appel au constructeur d'ImagePNG et à \info{exporter_rec()}.
+	    	\item \info{compressionDelta(unsigned delta)} : Méthode de compression d'un \qt et donc de son image associée basée sur un seuil maximal de différence en luminance entre les pixels. Ici delta est le seuil choisi pour la compression. Etant donné les limites des couleurs des pixels on a $delta<255$. Emploie ou \info{compressionSansPerte_rec()} ou \info{compressionDelta_rec} suivant la valeur de delta.
+	    	\item \info{compressionPhi(unsigned phi)} : Autre méthode de compression d'un \qt et de l'image encodée dans celui-ci. Celle-ci est basée sur un nombre maximal de feuilles restant après la compression. Ce nombre est le paramètre phi, or la compression ne pouvant aps supprimer le \qt dans son intégralité on a $phi>0$. Fais appel à la méthode privée \info{compressionPhi_rec()}.
+	    \end{itemize}
+	    
+	    \subsubsection{Méthodes facilitatrices (privées)}
+	    
+	    \begin{itemize}
+	    	\item \info{kiemeBit(unsigned n, unsigned k)} : Méthode statique simple retournant la valeur du k-ième bit d'un entier n positif. Présente afin de simplifier les calculs.
+	    	\item \info{afficher_rec(const Noeud * n, std::string tabs="")} : Méthode d'affichage textuel du \qt de façon récursive. Le paramètre n est le noeud duquel l'affichage se fait en "descendant".
+	    	\item \info{destructeur(Noeud * ptr)} : Méthode détruisant les nœuds et feuilles "plus bas" que ptr de façon récursive. Permet donc des destructions "sélectives" ou un emploi général depuis la racine comme destructeur du \qt entier.
+	    	\item \info{importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y)} : Méthode créant le \qt à partir d'une image de façon récursive en "descendant" et construisant l'arbre petit à petit, le remplissant des valeurs des pixels au fur et à mesure. Ici ptr est le noeud à partir duquel on descend pour contruire les feuilles suivantes, taille est la largeur de l'image, image est l'image au format ImagePNG à encoder dans le \qt et x et y sont les positions en cours afin de placer correctement les pixels aux bons endroits de l'arbre. L'image doit par contre être au format $2\up{n}\times2\up{n}$ avec $n>0$.
+	    	\item \info{exporter_rec(const Noeud* ptr, unsigned taille, ImagePNG & img, unsigned x, unsigned y)} : Méthode créant une image au format ImagePNG depuis les valeurs des pixels encodés dans le \qt de façon récursive. Fonctionne de la même façon que plus haut mais ici on va extraire les valeurs des feuilles de l'arbre afin de les mettre dans les pixels correspondant de image. A nouveau l'image doit être au format $2\up{n}\times2\up{n}$ avec $n>0$.
+	    	\item \info{compressionSansPerte_rec(Noeud* ptr, unsigned taille)} : Algorithme de compression récursif d'une image sans perte (dans le cas d'une compression Delta avec delta=0). Le paramètre ptr est le pointeur vers le Noeud duquel on effectue les éventuelles opérations de compression sur ses feuilles, taille est simplement la largeur de l'image.
+	    	\item \info{compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta)} : Algorithme de compression récursif d'une image avec perte basée sur la différence de luminance des pixels voisins. Le paramètre ptr est le pointeur vers le Noeud duquel on effectue les éventuelles opérations de compression sur ses feuilles, taille est simplement la largeur de l'image et delta est la différence de luminance requise.
+	    	\item \info{compressionPhi_rec(Noeud* ptr, unsigned phi)} : Algorithme de compression récursif d'une image avec perte, la compression se faisant afin d'atteindre un certain nombre maximum de feuilles dans le \qt. Le paramètre ptr est le pointeur vers le Noeud duquel on effectue les éventuelles opérations de compression sur ses feuilles, phi est le nombre maximum de feuilles autorisées dans l'arbre.
+	    	
+	    \end{itemize}
     
     \subsection{Encombrement mémoire}
     
