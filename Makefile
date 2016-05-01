@@ -16,7 +16,7 @@ RProg:
 #####################################################################
 #		Utilisation du Makefile :									#
 # ----------------------------------------------------------------- #
-#  all : Permet de tout executer										#
+#  all : Permet de tout executer									#
 #																	#
 #  CcQuad : Permet de compiler vers un .o quadtree.cpp				#
 #																	#

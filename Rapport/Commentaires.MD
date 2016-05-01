@@ -13,7 +13,7 @@ Listes des méthodes :
 	Commentaire suplementaire (difficulté rencontré) : Implementation d'initialisation
 
 - ~QuadTree() :
-	Complexité : Sa complexité dépend de la complexité de la methode destructeur(Noeud * ptr);
+	Complexité : θ(?) -> ? est la complexité de la methode récursive destructeur(Noeud * ptr);
 	Implementation : fait appel à la methode récursive destructeur(&_racine); qui va prendre en parametre un pointeur ver le noeud racine
 	Commentaire suplementaire (difficulté rencontré) : aucune difficulté vu que tous se passe dans la methode destructeur(Noeud * ptr);
 
@@ -48,33 +48,33 @@ Listes des méthodes :
 	Complexité : θ(1)
 	Implementation : Déja implementé quand on a commencé le projet
 
-# Pas encore ecrit :
 - destructeur() :
-	Complexité : θ()
-	Implementation :
-	Commentaire suplementaire (difficulté rencontré) :
+	Complexité : θ(nombreDeNoeud)
+	Implementation : Parcour l'ensemble des noeuds (récursivement) et delete les pointeurs de chaque noeud en commencant par les feuilles et en remontant l'arbre progressivement
+	Commentaire suplementaire (difficulté rencontré) : la difficulté a été de penser au cas d'arret et au parcours de l'arbre
 
 - importer_rec() :
-	Complexité :
-	Implementation :
-	Commentaire suplementaire (difficulté rencontré) :
+	Complexité : θ(nombreDeNoeud)
+	Implementation : Créé des Noeuds au fur et à mesure et insert dans ceci la couleur ou la moyenne de la couleur par rapport à l'image
+	Commentaire suplementaire (difficulté rencontré) : la difficulté a été la création des noeuds et surtout de mettre les bon pixel au bon endroit dans l'arbre (On a également eu une difficulté suplémentaire pour la moyenne des pixels pour les noeuds non-feuille)
 
 - exporter_rec() :
-	Complexité :
-	Implementation :
-	Commentaire suplementaire (difficulté rencontré) :
+	Complexité : θ(nombreDeNoeud)
+	Implementation : Parcour les Noeuds et ecrit les pixels grace au couleur des feuilles dans une image vierge ( vierge : a deja les bonne dimensions)  
+	Commentaire suplementaire (difficulté rencontré) : la difficulté a été de faire correspondre des arbres à une image (même pour des arbre désiquilibré) 
 
 - compressionSansPerte_rec() :
-	Complexité :
-	Implementation :
-	Commentaire suplementaire (difficulté rencontré) :
+	Complexité : θ(nombreDeNoeud)
+	Implementation : Parcour les Noeud à la recherche de Noeud et de leur fils qui serai pareil pour les suprimés
+	Commentaire suplementaire (difficulté rencontré) : la difficulté a été de parcourir l'arbre et de supprimée les zonnes ou les couleurs était les mêmes (entre pere et fils)
 
 - compressionDelta_rec() :
-	Complexité :
-	Implementation :
-	Commentaire suplementaire (difficulté rencontré) :
+	Complexité : θ(nombreDeNoeud)
+	Implementation : Parcour l'arbre à la recherche des feuilles qui sont inferieur ou égal à delta pour les suprimmées
+	Commentaire suplementaire (difficulté rencontré) : la difficulté a été de parcourir l'arbre et ensuite de supprimé les zonnes qui était inferieur ou égale au delta donnée en paramètre
 
-- compressionPhi_rec() :
-	Complexité :
-	Implementation :
-	Commentaire suplementaire (difficulté rencontré) :
+# Pas encore sur :
+- compressionPhi_rec() : Pas encore sur il me reste à l'implementer
+	Complexité : θ(nombreDeNoeud + TailleDuTableau) le tableau en question doit conserver les feuilles et leur luminescence
+	Implementation : Parcour l'arbre à la recherche de feuille à suprimmée pour que le nombre de feuilles soit égal au phi
+	Commentaire suplementaire (difficulté rencontré) : la difficulté a été le parcours de l'arbre, la suppression par rapport à phi et surtout de garder les bonnes zonnes à suprimé (demande beaucoup de mémoire)

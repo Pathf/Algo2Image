@@ -25,7 +25,7 @@ class QuadTree
         /** --------------------------------------------------------------------
          * @brief Constructeur d'un quadtree vide
          * 
-         * @b Complexité À COMPLÉTER
+         * @b Complexité θ(1)
         **/
         QuadTree();
 
@@ -107,10 +107,21 @@ class QuadTree
         // Type interne représentant 1 bit (valeur 0 ou 1)
         typedef bool bit;
 
-        // Fonction statique retournant la valeur du k-ième bit d'un entier positif n
+        /** --------------------------------------------------------------------
+         * @brief Fonction statique retournant la valeur du k-ième bit d'un entier positif n
+         * @param n est et k est 
+         * 
+         * @b Complexité θ(1)
+        **/
         static bit kiemeBit(unsigned n, unsigned k);
 
         // Fonction statique réalisant l'affichage récursivement depuis le noeud *n
+        /** --------------------------------------------------------------------
+         * @brief Suppression du QuadTree (Utilisation lors de l'appelle du destructeur)
+         * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre
+         * 
+         * @b Complexité θ( ??? )
+        **/
         static void afficher_rec(const Noeud * n, std::string tabs="");
 
         // Ajout personnel :
@@ -118,7 +129,7 @@ class QuadTree
          * @brief Suppression du QuadTree (Utilisation lors de l'appelle du destructeur)
          * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre
          * 
-         * @b Complexité À COMPLÉTER
+         * @b Complexité θ( ??? )
         **/
 		void destructeur(Noeud * ptr);
 
@@ -127,7 +138,7 @@ class QuadTree
          * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la largeur de l'image, image est l'image qui est importé, x et y sont les positions pour placer les pixels au bon endroit dans l'arbre.
          * @pre image format 2^n * 2^n
          * 
-         * @b Complexité À COMPLÉTER
+         * @b Complexité θ( ??? )
         **/
 		void importer_rec(Noeud * ptr, unsigned taille, const ImagePNG & img, unsigned x, unsigned y);
 		
@@ -136,7 +147,7 @@ class QuadTree
          * @param Pointeur vers Noeud pour savoir ou on est dans l'arbre, taille est la largeur de l'image, tabCpt est tableau contenant les zonnes par raport à la position dans l'arbre (position 0 = racine de l'arbre, position 1 un des fils de la racine, ... etc) et image est l'image qui est importé.
          * @pre image format 2^n * 2^n
          * 
-         * @b Complexité À COMPLÉTER
+         * @b Complexité θ( ??? )
         **/
 		void exporter_rec(const Noeud* ptr, unsigned taille, ImagePNG & img, unsigned x, unsigned y) const;
 
@@ -145,7 +156,7 @@ class QuadTree
          * @param ptr est le pointeur permettant de se mouvoir dans l'arbre
          * @pre delta == 0
          * 
-         * @b Complexité À COMPLÉTER
+         * @b Complexité θ( ??? )
         **/
 		void compressionSansPerte_rec(Noeud* ptr, unsigned taille);
 
@@ -154,7 +165,7 @@ class QuadTree
          * @param ptr est le pointeur permettant de se mouvoir dans l'arbre, taille est la largeur de l'image et delta est le chiffre correspondant à la compression demandé
          * @pre delta < 255
          * 
-         * @b Complexité À COMPLÉTER
+         * @b Complexité θ( ??? )
         **/
 		void compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta);
 
@@ -163,7 +174,7 @@ class QuadTree
          * @param ptr est le pointeur permettant de se mouvoir dans l'arbre, taille est la largeur de l'image
          * @pre phi > 0
          * 
-         * @b Complexité À COMPLÉTER
+         * @b Complexité θ( ??? )
         **/
 		void compressionPhi_rec(Noeud* ptr, unsigned phi, unsigned nbfeuille, unsigned taille);
 };
