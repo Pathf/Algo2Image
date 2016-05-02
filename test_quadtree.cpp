@@ -10,10 +10,10 @@ int main()
     ImagePNG originale,compressee;
     QuadTree arbre;
 
-    fichier = "i.png";
-    originale.charger(fichier);
+ //   fichier = "i.png";
+  //  originale.charger(fichier);
 
-    cout << endl << "-------------------------------------------------" << endl;
+/*    cout << endl << "-------------------------------------------------" << endl;
     cout << "Original :" << endl;
     arbre.importer(originale);
     arbre.afficher();
@@ -50,7 +50,7 @@ int main()
     arbre.afficher();
     compressee = arbre.exporter();
     compressee.sauver("zip-p001-"+fichier);
-    
+*/    
         cout << endl << "-------------------------------------------------" << endl;
     fichier = "pngs/16.png";
     originale.charger(fichier);
@@ -59,5 +59,5 @@ int main()
     arbre.compressionPhi(7);
     arbre.afficher();
     compressee = arbre.exporter();
-    compressee.sauver("zip-p001-"+fichier);
+    compressee.sauver("zip-p001-16.png");
 }

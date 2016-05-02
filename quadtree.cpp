@@ -2,10 +2,11 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
-#include "quadtree.hpp"
+#include <math.h>
 #include <vector>		// std::vector
 #include <utility>		// std::pair
 #include <algorithm>    // std::sort
+#include "quadtree.hpp"
 
 using namespace std;
 
@@ -110,7 +111,7 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 		unsigned nbfeuille = tailleI * tailleI;
 
 		vector<pair<unsigned, Noeud*>> vecStockTmp;
-		stockLumMax(&_racine, tailleI, vecStockTmp);
+		stockLumMax(&_racine, tailleI, &vecStockTmp);
 
 		// sort: fonction de tri du vecteur en ordre décroissant, en utilisant une règle de comparaison
 		// des éléments pairs définie sur les différences de luminosité
@@ -119,14 +120,15 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 		// Si le nombre de feuille est superieur à phi alors on utilise la methode récursive compressionPh_rec();
 		// sinon on ne fait rien car il est deja au norme demandé		
 		while(nbfeuille > phi){
-			for(auto f : vecStockTmp	.at(vecStockTmp.size() -1).second->fils)
-				destructeur(f);
+			Noeud * ptr = vecStockTmp.at(vecStockTmp.size() -1).second;
+			destructeur(ptr);
 			vecStockTmp.pop_back();
 
 			nbfeuille -= 3;
 
 			if(vecStockTmp.size() == 0){
-				stockLumMax(&_racine, tailleI, vecStockTmp);
+				tailleI /= 2;
+				stockLumMax(&_racine, tailleI, &vecStockTmp);
 				// sort: fonction de tri du vecteur en ordre décroissant, en utilisant une règle de comparaison
 				// des éléments pairs définie sur les différences de luminosité
 				std::sort(vecStockTmp.begin(), vecStockTmp.end(), [] (const pair<unsigned, Noeud*>& firstElem, const pair<unsigned, Noeud*>& secondElem) { return firstElem.first > secondElem.first; });
@@ -269,16 +271,16 @@ void QuadTree::compressionDelta_rec(Noeud* ptr, unsigned taille, unsigned delta)
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::stockLumMax(Noeud* ptr, unsigned taille, vector<pair<unsigned, Noeud*>> vecStock){
-	if(taille > 2)
+void QuadTree::stockLumMax(Noeud* ptr, unsigned taille, vector<pair<unsigned, Noeud*>> * vecStock){
+	if(taille > 2){
 		for(auto f : ptr->fils)
-			stockLumMax(f, taille/2, vecStock);
-	else {	
+			stockLumMax(f, taille/2, vecStock);					
+	} else {
 		// Pour la difference de luminence
 		unsigned maxLumFils = 0;
 		for(auto f : ptr->fils)
 			if(diff_lum(f->rvb, ptr->rvb) > maxLumFils)
 				maxLumFils = diff_lum(f->rvb, ptr->rvb);
-		vecStock.push_back(make_pair(maxLumFils,ptr));
+		vecStock->push_back(make_pair(maxLumFils,ptr));
 	}
 }

@@ -186,6 +186,6 @@ class QuadTree
          * 
          * @b Complexité θ( nombre de Noeud )
         **/
-		void stockLumMax(Noeud* ptr, unsigned taille, std::vector<std::pair<unsigned, Noeud*>> vecStock);
+		void stockLumMax(Noeud* n, unsigned taille, std::vector<std::pair<unsigned, Noeud*>> * vecStock);
 };
 #endif

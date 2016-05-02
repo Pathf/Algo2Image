@@ -5,9 +5,11 @@ CcQuad:
 	g++ -std=c++11 quadtree.cpp -c -L.
 
 CcTestU:
+	#g++ -std=c++11 testUnitaires.cpp -c -L.
 	g++ -std=c++11 testUnitaires.cpp -c -L.
 
 CoProg:
+	#g++ -std=c++11 testUnitaires.o quadtree.o -o prog -L. -llodepng
 	g++ -std=c++11 testUnitaires.o quadtree.o -o prog -L. -llodepng
 	
 RProg:

@@ -68,5 +68,7 @@ int main(){
     	}
 	    cout << "Voulez vous faire d'autre operation sur cette image ou d'autre image ? (Y/N)" << endl;
     	cin >> test;
-	}while(test == "Y");                
+	}while(test == "Y");
+	
+	return 0;             
 }
