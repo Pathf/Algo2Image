@@ -52,12 +52,15 @@ int main(){
 	if(cpt == 0){
 		originale.charger("pngs/128-gnu.png");
 		cout << "Fichier : 128-gnu.png" << endl;
+		flux << "Fichier : 128-gnu.png" << endl;
 	} else if(cpt == 1){
 		originale.charger("pngs/512-books.png");
 		cout << "Fichier : 512-books.png" << endl;
+		flux << "Fichier : 512-books.png" << endl;
 	} else {
 		originale.charger("pngs/2048-earth.png");
-		cout << "Fichier : 2048-earth.png" << endl;	
+		cout << "Fichier : 2048-earth.png" << endl;
+		flux << "Fichier : 2048-earth.png" << endl;
 	}
 	
 
@@ -65,22 +68,19 @@ int main(){
     arbre.importer(originale);
     STOP;
 
-	flux << TEMPS - tmp << " => importer() " << std::endl;
-	tmp = TEMPS;
+	flux << TEMPS - tmp << " => importer() de " << cpt << std::endl;
     
 	START;
 	arbre.compressionDelta(0);
 	STOP;
 
 	flux << TEMPS - tmp << " => compressionDelta(0) sans perte" << std::endl;
-	tmp = TEMPS;
 	
 	START;
 	compressee = arbre.exporter();
 	STOP;
 	
 	flux << TEMPS - tmp << " => exporter() avec une compression sans perte" << std::endl;
-	tmp = TEMPS;
 	
 	arbre.importer(originale);
 	START;
@@ -88,14 +88,12 @@ int main(){
 	STOP;
 
 	flux << TEMPS - tmp << " => compressionDelta(50) delta = 50" << std::endl;
-	tmp = TEMPS;
 	
 	START;
 	compressee = arbre.exporter();
 	STOP;
 	
 	flux << TEMPS - tmp << " => exporter() avec une compression delta 50" << std::endl;
-	tmp = TEMPS;
 	
 	arbre.importer(originale);
 	START;
@@ -103,14 +101,12 @@ int main(){
 	STOP;
 	
 	flux << TEMPS - tmp << " => compressionDelta(200) delta = 200" << std::endl;
-	tmp = TEMPS;
 	
 	START;
 	compressee = arbre.exporter();
 	STOP;
 	
 	flux << TEMPS - tmp << " => exporter() avec une compression delta 200" << std::endl;
-	tmp = TEMPS;
 
 	arbre.importer(originale);
 	START;
@@ -118,14 +114,12 @@ int main(){
 	STOP;
 
 	flux << TEMPS - tmp << " => compressionPhi(50) phi = 50" << std::endl;
-	tmp = TEMPS;
 	
 	START;
 	compressee = arbre.exporter();
 	STOP;
 	
 	flux << TEMPS - tmp << " => exporter() avec une compression phi 50" << std::endl;
-	tmp = TEMPS;
 	
 	arbre.importer(originale);
 	START;
@@ -133,15 +127,15 @@ int main(){
 	STOP;
 	
 	flux << TEMPS - tmp << " => compressionPhi(200) phi = 200" << std::endl;
-	tmp = TEMPS;
 	
 	START;
 	compressee = arbre.exporter();
 	STOP;
 	
-	flux << TEMPS - tmp << " => exporter() avec une compression phi 200" << std::endl;
+	flux << TEMPS - tmp << " => exporter() avec une compression phi 200\n" << std::endl;
 	tmp = TEMPS;
 
+	cout << "completed" << endl;
 	cpt++;
 	}while(cpt != 3);
 	

@@ -1,35 +1,19 @@
 all:
-	make CcQuad CcTestU CoProg RProg
+	make CcQuad CcTest CoProg RProg
 
 CcQuad:
 	g++ -std=c++11 quadtree.cpp -c -L.
 
-CcTestU:
-	#g++ -std=c++11 testUnitaires.cpp -c -L.
+CcTest:
 	g++ -std=c++11 testUnitaires.cpp -c -L.
+	#g++ -std=c++11 Mesure.cpp -c -L.
 
 CoProg:
-	#g++ -std=c++11 testUnitaires.o quadtree.o -o prog -L. -llodepng
 	g++ -std=c++11 testUnitaires.o quadtree.o -o prog -L. -llodepng
+	#g++ -std=c++11 Mesure.o quadtree.o -o prog -L. -llodepng
 	
 RProg:
 	./prog
-
-# Suppression du prog, des .o et des images
-Sall:
-	make all SCc SProg SImg STild
-	
-SCc:
-	rm quadtree.o testUnitaires.o
-	
-SProg:
-	rm prog
-
-SImg:
-	rm zip-d-128-gnu.png zip-d-512-books.png zip-d-2048-earth.png
-
-STild:
-	sh SuppFauxFich.sh
 
 #####################################################################
 #		Utilisation du Makefile :									#

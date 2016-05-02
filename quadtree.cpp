@@ -43,30 +43,19 @@ void QuadTree::afficher() const {
 //------------------------------------------------------------------------------
 void QuadTree::importer(const ImagePNG & img){ // A VERIFIER PAR RAPPORT A UN ARBRE PLUS ANCIEN
 	//initialise la taille à 0 :	
-	_taille = 0;
-	// Creation de la taille de l'arbre à partir de la largeur de l'image
-	unsigned larg = img.largeur();	
-	while(larg != 1){
-		larg /= 2;
-		_taille++;
-	}
+	_taille = img.largeur();
 
 	// Appel de la methode récursive importer_rec(); pour créer tout l'arbre à partir d'une image
-	importer_rec(&_racine, img.largeur(), img, 0, 0);
+	importer_rec(&_racine, _taille, img, 0, 0);
 }
 
 //------------------------------------------------------------------------------
 ImagePNG QuadTree::exporter() const{
-	// Reconstitution de la taille d'un coté de l'image d'origine
-	unsigned coteImage = 1;
-	for(int i = 0; i < _taille; i++)
-		coteImage *= 2;
-
 	// Création d'une image blanche avec le hauteur et largeur de l'image de base
-    ImagePNG img(coteImage, coteImage);
+    ImagePNG img(_taille, _taille);
 
 	// Utilisation de la méthode récursive exporter_rec(); pour créer dans sa totalité l'image
-	exporter_rec(&_racine, coteImage, img, 0, 0);
+	exporter_rec(&_racine, _taille, img, 0, 0);
 
 	// Et on retourne cette image créée
     return img;
@@ -77,21 +66,16 @@ void QuadTree::compressionDelta(unsigned delta){
 	// Verifie que le delta est correct (une couleur ne peut pas etre superieure à 255)
 	assert(delta < 255);
 
-	// Reconstitution de la taille d'un coté de l'image
-	unsigned tailleI = 1;
-	for(int i = 0; i < _taille; i++)
-		tailleI *= 2;
-
 	// Si delta est égal à 0 alors simple appel de la méthode récursive compressionSansPerte_rec(); qui evite des calculs inutiles
 	// Sinon appel de la methode récursive compressionDelta_rec();
 	if(delta == 0)
-		compressionSansPerte_rec(&_racine, tailleI);
+		compressionSansPerte_rec(&_racine, _taille);
 	else
-		compressionDelta_rec(&_racine, tailleI, delta);
+		compressionDelta_rec(&_racine, _taille, delta);
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::compressionPhi(unsigned phi){ // A FINIR
+void QuadTree::compressionPhi(unsigned phi){
 	// Vérification car supprimer la racine n'a pas de sens
 	assert(phi > 0);
 
@@ -103,15 +87,12 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 			destructeur(f);
 	
 	if(phi > 4){
-		// Reconstitution de la taille d'un coté de l'image
-		unsigned tailleI = 1;
-		for(int i=0; i<_taille; i++)
-			tailleI *= 2;
+		unsigned taille = _taille;
 		// Reconstitution du nombre de feuille au total
-		unsigned nbfeuille = tailleI * tailleI;
+		unsigned nbfeuille = _taille * _taille;
 
 		vector<pair<unsigned, Noeud*>> vecStockTmp;
-		stockLumMax(&_racine, tailleI, &vecStockTmp);
+		stockLumMax(&_racine, _taille, &vecStockTmp);
 
 		// sort: fonction de tri du vecteur en ordre décroissant, en utilisant une règle de comparaison
 		// des éléments pairs définie sur les différences de luminosité
@@ -127,8 +108,8 @@ void QuadTree::compressionPhi(unsigned phi){ // A FINIR
 			nbfeuille -= 3;
 
 			if(vecStockTmp.size() == 0){
-				tailleI /= 2;
-				stockLumMax(&_racine, tailleI, &vecStockTmp);
+				taille /= 2;
+				stockLumMax(&_racine, taille, &vecStockTmp);
 				// sort: fonction de tri du vecteur en ordre décroissant, en utilisant une règle de comparaison
 				// des éléments pairs définie sur les différences de luminosité
 				std::sort(vecStockTmp.begin(), vecStockTmp.end(), [] (const pair<unsigned, Noeud*>& firstElem, const pair<unsigned, Noeud*>& secondElem) { return firstElem.first > secondElem.first; });
